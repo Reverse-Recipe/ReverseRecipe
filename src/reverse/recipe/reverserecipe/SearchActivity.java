@@ -3,6 +3,8 @@ package reverse.recipe.reverserecipe;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -15,16 +17,16 @@ import org.json.JSONObject;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.app.Activity;
+import android.app.ListActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 import android.support.v4.app.NavUtils;
 import android.annotation.TargetApi;
 import android.os.Build;
 
-public class SearchActivity extends Activity {
+public class SearchActivity extends ListActivity {
+	recipeArrayAdapter adapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -70,8 +72,15 @@ public class SearchActivity extends Activity {
 
 	//Method Called By Search Recipe Button Click
 	public void searchRecipes(View view) {
-		String recipeSearchStr;
 		
+		//Create List Adapter for Results
+		ArrayList<Recipe> arrayOfRecipes = new ArrayList<Recipe>();
+		// Create the adapter to convert the array to views
+		adapter = new recipeArrayAdapter(this, arrayOfRecipes);
+		// Attach the adapter to a ListView
+		setListAdapter(adapter);
+		
+		String recipeSearchStr;
 		recipeSearchStr = "http://www.reverserecipe.host22.com/api/?tag=searchRecipes&ingreds="; //Default Web Address
 		recipeSearchStr += "cheese%2A+bacon"; //Add Ingredients Here
 		new GetRecipes().execute(recipeSearchStr); //Execute Search
@@ -126,30 +135,28 @@ public class SearchActivity extends Activity {
 		protected void onPostExecute(String info) {
 			super.onPostExecute(info);
 
-			//Create Recipe Information Variables
-			String[] recipeTitle = new String[30];
-			int[] recipeID = new int[30];
-			String[] recipeAuthor = new String[30];
-			double[] recipeRelevance = new double[30];
-			
 			try {
 				//parse JSON
 				JSONObject resultObject = new JSONObject(info); //Puts String Retrieved In JSONObject
 				JSONObject resultObject2 = resultObject.getJSONObject("recipes"); //Refines Object To Recipes
-				
+
 				int NumRecipes = resultObject.getInt("number of recipes"); // Grabs number of recipes
 
 				//loop through recipes
 				for (int p=1; p<=NumRecipes; p++) {
-					
+
 					try{
 						//attempt to retrieve place data values
 						JSONObject recipeObject = resultObject2.getJSONObject(String.valueOf(p)); //Get first object from array
+
+						String titleTemp = recipeObject.getString("title"); //Get Recipe Title
+						int idTemp = recipeObject.getInt("recipe id");
+						String authorTemp = recipeObject.getString("author");
+						double relevanceTemp = recipeObject.getDouble("relevance");
 						
-						recipeTitle[p-1] = recipeObject.getString("title"); //Get Recipe Title
-						recipeID[p-1] = recipeObject.getInt("recipe id");
-						recipeAuthor[p-1] = recipeObject.getString("author");
-						recipeRelevance[p-1] = recipeObject.getDouble("relevance");
+						//Display Recipe In List
+						Recipe newRecipe = new Recipe(titleTemp, idTemp, authorTemp, relevanceTemp);
+						adapter.add(newRecipe);
 					}
 					catch(JSONException jse){
 						jse.printStackTrace();
@@ -160,29 +167,28 @@ public class SearchActivity extends Activity {
 			catch (Exception e) {
 				e.printStackTrace();
 			}
-			
-			DisplayResults(recipeTitle, recipeID, recipeAuthor, recipeRelevance); //Method To Display Results
-			
+
 		}
 
 	} //END ASYNC
 
-	
-	private void DisplayResults(String[] Titles, int[] IDs, String[] Authors, double[] Relevances) {
+
+	//Stores Recipes Found
+	public class Recipe { 
+		String Title;
+		int ID;
+		String Author;
+		double Relevance;
 		
-		//TEST Displaying Of First Result
-		TextView resultsText = (TextView)findViewById(R.id.recipeResults);
-		resultsText.setText("Title: " + Titles[0] + "  ID: " + IDs[0] + "  Author: " + Authors[0] + "  Relevance: " + Relevances[0]);
+	    public Recipe(String titleT, int idT, String authorT, double relevanceT) {
+	        this.Title = titleT;
+	        this.ID = idT;
+	        this.Author = authorT;
+	        
+	        DecimalFormat dec = new DecimalFormat("0.00");
+	        this.Relevance = Double.parseDouble(dec.format(relevanceT)); //Round to 2 decimals
+	     }
 	}
-
-
-
-
-
-
-
-
-
 
 
 }

@@ -8,20 +8,19 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".SearchActivity" >
 
-    
-    <Button 
+    <Button
         android:id="@+id/searchButton"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:text="@string/search_recipes"
-        android:onClick="searchRecipes"/>
-    
-    <TextView
-        android:id="@+id/recipeResults"
-        android:layout_width="wrap_content"
+        android:onClick="searchRecipes"
+        android:text="@string/search_recipes" />
+
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/hello_world"
-        android:layout_below="@+id/searchButton"/>
-    
+        android:layout_below="@+id/searchButton"
+        android:layout_marginTop="10dp" >
+    </ListView>
+
 </RelativeLayout>
