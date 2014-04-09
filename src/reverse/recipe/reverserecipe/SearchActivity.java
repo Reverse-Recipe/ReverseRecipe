@@ -68,28 +68,25 @@ public class SearchActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	
+	//Method Called By Search Recipe Button Click
 	public void searchRecipes(View view) {
 		String recipeSearchStr;
 		
-		recipeSearchStr = "http://www.reverserecipe.host22.com/api/?tag=searchRecipes&ingreds=";
-		recipeSearchStr += "cheese%2A+bacon";
-		new GetRecipes().execute(recipeSearchStr);
+		recipeSearchStr = "http://www.reverserecipe.host22.com/api/?tag=searchRecipes&ingreds="; //Default Web Address
+		recipeSearchStr += "cheese%2A+bacon"; //Add Ingredients Here
+		new GetRecipes().execute(recipeSearchStr); //Execute Search
 	}
 
 
 	//ASyncTask To Work In Background (Parameters: Input Type, Progress Type (not used), Output Type)
 	private class GetRecipes extends AsyncTask<String, Void, String> {
-		//fetch and parse place data
 
 		//Grabs Data In Background		
 		protected String doInBackground(String... recipeURL) {
-			//fetch places
-
 			String recipeSearchURL = recipeURL[0];
 			StringBuilder recipeBuilder = new StringBuilder();
 
-			HttpClient recipeClient = new DefaultHttpClient(); //Web Client To Make Search
+			HttpClient recipeClient = new DefaultHttpClient(); //Web Client To Search
 
 			try {
 				//try to fetch the data
@@ -138,9 +135,9 @@ public class SearchActivity extends Activity {
 			try {
 				//parse JSON
 				JSONObject resultObject = new JSONObject(info); //Puts String Retrieved In JSONObject
-				int NumRecipes = resultObject.getInt("number of recipes"); // Grabs number of recipes
-				
 				JSONObject resultObject2 = resultObject.getJSONObject("recipes"); //Refines Object To Recipes
+				
+				int NumRecipes = resultObject.getInt("number of recipes"); // Grabs number of recipes
 
 				//loop through recipes
 				for (int p=1; p<=NumRecipes; p++) {
