@@ -6,5 +6,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_search">Search Recipes</string>
     <string name="search_recipes">Search Recipes</string>
+    <string name="title_activity_display_recipe">View Recipe</string>
+    <string name="display_recipe">View Recipe</string>
 
 </resources>

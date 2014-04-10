@@ -25,5 +25,10 @@ public class MainActivity extends Activity {
 		Intent intent_recipes = new Intent(this,SearchActivity.class);
 		startActivity(intent_recipes);
 	}
+	
+	public void GoToDisplayRecipe(View view) {
+		Intent intent_recipes = new Intent(this,DisplayRecipeActivity.class);
+		startActivity(intent_recipes);
+	}
 
 }
