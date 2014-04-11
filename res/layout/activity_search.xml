@@ -2,16 +2,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".SearchActivity" >
 
     <Button
         android:id="@+id/searchButton"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_width="fill_parent"
+        android:layout_height="70dp"
+        android:layout_marginTop="10dp"
         android:onClick="searchRecipes"
         android:text="@string/search_recipes" />
 
@@ -19,8 +16,7 @@
         android:id="@android:id/list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/searchButton"
-        android:layout_marginTop="10dp" >
+        android:layout_below="@+id/searchButton" >
     </ListView>
 
 </RelativeLayout>
