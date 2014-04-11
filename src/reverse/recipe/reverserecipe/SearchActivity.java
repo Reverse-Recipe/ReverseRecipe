@@ -29,7 +29,9 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 
 public class SearchActivity extends ListActivity {
-	recipeArrayAdapter adapter;
+	recipeArrayAdapter adapter; //Adapter to display results
+	boolean[] hasImage = new boolean[30]; //Stores which recipes have an image (to load later)
+	Bitmap defaultImage; //Default Image For Recipe (Assigned to On Button Click)
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -76,12 +78,14 @@ public class SearchActivity extends ListActivity {
 	//Method Called By Search Recipe Button Click
 	public void searchRecipes(View view) {
 
-		//Create List Adapter for Results
+		// Create List Adapter for Results
 		ArrayList<Recipe> arrayOfRecipes = new ArrayList<Recipe>();
 		// Create the adapter to convert the array to views
 		adapter = new recipeArrayAdapter(this, arrayOfRecipes);
 		// Attach the adapter to a ListView
 		setListAdapter(adapter);
+		// Assign Default Image for Recipes
+		defaultImage = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
 
 		String recipeSearchStr;
 		recipeSearchStr = "http://www.reverserecipe.host22.com/api/?tag=searchRecipes&ingreds="; //Default Web Address
@@ -159,23 +163,26 @@ public class SearchActivity extends ListActivity {
 						double relevanceTemp = recipeObject.getDouble("relevance");
 						String imageURL = recipeObject.getString("image").replace("\\/", "/");
 
-						//Download Bitmap Image From URL
-						Bitmap output = BitmapFactory.decodeResource(getResources(),
-                                R.drawable.ic_launcher);
+						//Mark Recipe's That Need Their Image Downloaded
 						if (!"NULL".equals(imageURL)) {
-							output =
-								    new DownloadImageTask()
-								        .execute(imageURL)
-								        .get();
-						} 
+							hasImage[p-1] = true;
+						} else {
+							hasImage[p-1] = false;
+						}
 						
 						//Add Recipe Information
-						Recipe newRecipe = new Recipe(titleTemp, idTemp, authorTemp, relevanceTemp, output);
+						Recipe newRecipe = new Recipe(titleTemp, idTemp, authorTemp, relevanceTemp, imageURL, defaultImage);
 						adapter.add(newRecipe);
-
 					}
 					catch(JSONException jse){
 						jse.printStackTrace();
+					}
+				}
+				
+				//Download Recipe Image's
+				for (int p=0; p<30; p++) {
+					if (hasImage[p]) {
+						new DownloadImageTask(p).execute(adapter.getItem(p).imageURLT);
 					}
 				}
 
@@ -196,8 +203,9 @@ public class SearchActivity extends ListActivity {
 		String Author;
 		double Relevance;
 		Bitmap Image;
+		String imageURLT;
 
-		public Recipe(String titleT, int idT, String authorT, double relevanceT, Bitmap	imageT) {
+		public Recipe(String titleT, int idT, String authorT, double relevanceT, String imageURLT, Bitmap imageT) {
 			this.Title = titleT;
 			this.ID = idT;
 			this.Author = authorT;
@@ -205,6 +213,7 @@ public class SearchActivity extends ListActivity {
 			DecimalFormat dec = new DecimalFormat("0.00");
 			this.Relevance = Double.parseDouble(dec.format(relevanceT)); //Round to 2 decimals
 
+			this.imageURLT = imageURLT;
 			this.Image = imageT;
 		}
 	}
@@ -212,6 +221,11 @@ public class SearchActivity extends ListActivity {
 
 	//Downloads Images From URL
 	private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {		
+		int ItemNum;
+		
+		public DownloadImageTask(int itemNum) {
+			this.ItemNum = itemNum;
+		}
 
 	    protected Bitmap doInBackground(String... urls) {
 	        String urldisplay = urls[0];
@@ -228,6 +242,8 @@ public class SearchActivity extends ListActivity {
 
 	    protected void onPostExecute(Bitmap result) {
 	    	super.onPostExecute(result);
+	    	adapter.getItem(ItemNum).Image = result;
+			adapter.notifyDataSetChanged();
 	    }
 	}
 
