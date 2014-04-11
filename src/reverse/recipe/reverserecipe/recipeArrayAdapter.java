@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-//import android.widget.ImageView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class recipeArrayAdapter  extends ArrayAdapter<Recipe>  {
@@ -17,7 +17,7 @@ public class recipeArrayAdapter  extends ArrayAdapter<Recipe>  {
 		TextView title;
 		TextView author;
 		TextView extras;
-		//ImageView image;
+		ImageView image;
 	}
 
 	public recipeArrayAdapter(Context context, ArrayList<Recipe> values) {
@@ -38,17 +38,21 @@ public class recipeArrayAdapter  extends ArrayAdapter<Recipe>  {
 			viewHolder.title = (TextView) convertView.findViewById(R.id.titleLabel);
 			viewHolder.author = (TextView) convertView.findViewById(R.id.authorLabel);
 			viewHolder.extras = (TextView) convertView.findViewById(R.id.extrasLabel);
-			//viewHolder.image = (ImageView) convertView.findViewById(R.id.icon);
+			viewHolder.image = (ImageView) convertView.findViewById(R.id.icon);
 			convertView.setTag(viewHolder);
 		} else {
 			viewHolder = (ViewHolder) convertView.getTag();
+			viewHolder.image = (ImageView) convertView.findViewById(R.id.icon);
 		}
 		
 		// Populate the data into the template view using the data object
 		viewHolder.title.setText(recipe.Title);
 		viewHolder.author.setText("Author: " + recipe.Author);
 		viewHolder.extras.setText("ID: " + recipe.ID + "         Relevance: " + recipe.Relevance);
-
+		
+		if (recipe.Image != null) {
+			viewHolder.image.setImageBitmap(recipe.Image);
+		}
 		// Return the completed view to render on screen
 		return convertView;
 	} 

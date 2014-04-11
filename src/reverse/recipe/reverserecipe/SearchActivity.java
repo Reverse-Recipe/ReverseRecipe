@@ -18,11 +18,14 @@ import org.json.JSONObject;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.ListActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.support.v4.app.NavUtils;
 import android.annotation.TargetApi;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 
 public class SearchActivity extends ListActivity {
@@ -72,14 +75,14 @@ public class SearchActivity extends ListActivity {
 
 	//Method Called By Search Recipe Button Click
 	public void searchRecipes(View view) {
-		
+
 		//Create List Adapter for Results
 		ArrayList<Recipe> arrayOfRecipes = new ArrayList<Recipe>();
 		// Create the adapter to convert the array to views
 		adapter = new recipeArrayAdapter(this, arrayOfRecipes);
 		// Attach the adapter to a ListView
 		setListAdapter(adapter);
-		
+
 		String recipeSearchStr;
 		recipeSearchStr = "http://www.reverserecipe.host22.com/api/?tag=searchRecipes&ingreds="; //Default Web Address
 		recipeSearchStr += "cheese%2A+bacon"; //Add Ingredients Here
@@ -149,14 +152,27 @@ public class SearchActivity extends ListActivity {
 						//attempt to retrieve place data values
 						JSONObject recipeObject = resultObject2.getJSONObject(String.valueOf(p)); //Get first object from array
 
+						//Get Information From JSON
 						String titleTemp = recipeObject.getString("title"); //Get Recipe Title
 						int idTemp = recipeObject.getInt("recipe id");
 						String authorTemp = recipeObject.getString("author");
 						double relevanceTemp = recipeObject.getDouble("relevance");
+						String imageURL = recipeObject.getString("image").replace("\\/", "/");
+
+						//Download Bitmap Image From URL
+						Bitmap output = BitmapFactory.decodeResource(getResources(),
+                                R.drawable.ic_launcher);
+						if (!"NULL".equals(imageURL)) {
+							output =
+								    new DownloadImageTask()
+								        .execute(imageURL)
+								        .get();
+						} 
 						
-						//Display Recipe In List
-						Recipe newRecipe = new Recipe(titleTemp, idTemp, authorTemp, relevanceTemp);
+						//Add Recipe Information
+						Recipe newRecipe = new Recipe(titleTemp, idTemp, authorTemp, relevanceTemp, output);
 						adapter.add(newRecipe);
+
 					}
 					catch(JSONException jse){
 						jse.printStackTrace();
@@ -179,16 +195,40 @@ public class SearchActivity extends ListActivity {
 		int ID;
 		String Author;
 		double Relevance;
-		
-	    public Recipe(String titleT, int idT, String authorT, double relevanceT) {
-	        this.Title = titleT;
-	        this.ID = idT;
-	        this.Author = authorT;
-	        
-	        DecimalFormat dec = new DecimalFormat("0.00");
-	        this.Relevance = Double.parseDouble(dec.format(relevanceT)); //Round to 2 decimals
-	     }
+		Bitmap Image;
+
+		public Recipe(String titleT, int idT, String authorT, double relevanceT, Bitmap	imageT) {
+			this.Title = titleT;
+			this.ID = idT;
+			this.Author = authorT;
+
+			DecimalFormat dec = new DecimalFormat("0.00");
+			this.Relevance = Double.parseDouble(dec.format(relevanceT)); //Round to 2 decimals
+
+			this.Image = imageT;
+		}
 	}
 
+
+	//Downloads Images From URL
+	private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {		
+
+	    protected Bitmap doInBackground(String... urls) {
+	        String urldisplay = urls[0];
+	        Bitmap mIcon11 = null;
+	        try {
+	            InputStream in = new java.net.URL(urldisplay).openStream();
+	            mIcon11 = BitmapFactory.decodeStream(in);
+	        } catch (Exception e) {
+	            Log.e("Error", e.getMessage());
+	            e.printStackTrace();
+	        }
+	        return mIcon11;
+	    }
+
+	    protected void onPostExecute(Bitmap result) {
+	    	super.onPostExecute(result);
+	    }
+	}
 
 }
