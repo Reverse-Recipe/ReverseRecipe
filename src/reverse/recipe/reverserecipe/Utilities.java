@@ -27,7 +27,6 @@ public class Utilities {
 
 			StatusLine recipeSearchStatus = recipeResponse.getStatusLine(); //Checks If Anything Went Wrong In Search
 
-
 			if (recipeSearchStatus.getStatusCode() == 200) {						//we have an OK response
 
 				HttpEntity recipeEntity = recipeResponse.getEntity(); //Entity Holding Response

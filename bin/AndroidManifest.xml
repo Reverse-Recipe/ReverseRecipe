@@ -40,6 +40,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.kawtoolkit.MainActivity" />
         </activity>
+        <activity
+            android:name="reverse.recipe.reverserecipe.IngredientSearchActivity"
+            android:label="@string/title_activity_ingredient_search"
+            android:parentActivityName="reverse.recipe.reverserecipe.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="reverse.recipe.reverserecipe.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

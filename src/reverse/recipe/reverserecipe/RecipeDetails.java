@@ -134,8 +134,8 @@ public class RecipeDetails {
 	public void setMethod(String[] method) {
 		this.method = method;
 	}
-	
-    public String[] getNutritionInfo() {
+
+	public String[] getNutritionInfo() {
 		return nutritionInfo;
 	}
 

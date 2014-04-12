@@ -8,5 +8,8 @@
     <string name="search_recipes">Search Recipes</string>
     <string name="title_activity_display_recipe">View Recipe</string>
     <string name="display_recipe">View Recipe</string>
+    <string name="title_activity_ingredient_search">IngredientSearchActivity</string>
+    <string name="search_ingredients">Search Ingredients</string>
+    <string name="add_ingredient">Add</string>
 
 </resources>

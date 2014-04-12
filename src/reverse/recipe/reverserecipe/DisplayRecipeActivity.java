@@ -2,6 +2,7 @@ package reverse.recipe.reverserecipe;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.os.AsyncTask;
@@ -23,9 +24,6 @@ public class DisplayRecipeActivity extends Activity {
 		setupActionBar();
 	}
 	
-	/**
-	 * Set up the {@link android.app.ActionBar}, if the API is available.
-	 */
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void setupActionBar() {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -110,6 +108,7 @@ public class DisplayRecipeActivity extends Activity {
 			//recipe.setNutritionInfo(Utilities.iterateThroughJson(recipeNutrition, "nutrition labels", "number of labels"));
 			
 			//lets see if it worked
+			
 			Log.v("", recipe.getTitle());
 			Log.v("", recipe.getIngredients()[0]);
 			Log.v("", recipe.getMethod()[0]);
