@@ -7,7 +7,6 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -50,7 +49,6 @@ public class IngredientSearchActivity extends Activity {
 			public void onClick(View arg0) {
 				
 				String input = editText.getText().toString();
-				Log.v("", input);
 				
 				if (Arrays.asList(allIngredients).contains(input) && !(ingredientList.contains(input))) {
 			        adapter.add(input);

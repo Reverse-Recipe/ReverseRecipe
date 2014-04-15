@@ -35,5 +35,10 @@ public class MainActivity extends Activity {
 		Intent intent_recipes = new Intent(this,IngredientSearchActivity.class);
 		startActivity(intent_recipes);
 	}
+	
+	public void GoToMyPantry(View view) {
+		Intent intent_recipes = new Intent(this,MyPantryActivity.class);
+		startActivity(intent_recipes);
+	}
 
 }

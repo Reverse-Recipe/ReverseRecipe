@@ -8,8 +8,12 @@
     <string name="search_recipes">Search Recipes</string>
     <string name="title_activity_display_recipe">View Recipe</string>
     <string name="display_recipe">View Recipe</string>
-    <string name="title_activity_ingredient_search">IngredientSearchActivity</string>
+    <string name="title_activity_ingredient_search">Search Ingredients</string>
     <string name="search_ingredients">Search Ingredients</string>
     <string name="add_ingredient">Add</string>
+    <string name="title_activity_my_pantry">My Pantry</string>
+    <string name="my_pantry">My Pantry</string>
+    <string name="preference_file_key">Saved Pantry</string>
+    <string name="delete">Delete</string>
 
 </resources>

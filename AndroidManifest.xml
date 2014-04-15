@@ -48,6 +48,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="reverse.recipe.reverserecipe.MainActivity" />
         </activity>
+        <activity
+            android:name="reverse.recipe.reverserecipe.MyPantryActivity"
+            android:label="@string/title_activity_my_pantry"
+            android:parentActivityName="reverse.recipe.reverserecipe.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="reverse.recipe.reverserecipe.MainActivity" />
+        </activity>
     </application>
 
 </manifest>
