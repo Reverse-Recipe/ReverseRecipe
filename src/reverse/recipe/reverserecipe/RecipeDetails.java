@@ -1,5 +1,6 @@
 package reverse.recipe.reverserecipe;
 
+//contains all recipe information
 public class RecipeDetails { 		
 	
 	private int id;

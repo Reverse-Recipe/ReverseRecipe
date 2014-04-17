@@ -1,5 +1,6 @@
 package reverse.recipe.reverserecipe;
 
+import reverse.recipe.reverserecipe.R;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;

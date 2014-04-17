@@ -3,6 +3,8 @@ package reverse.recipe.reverserecipe;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import org.apache.http.HttpEntity;
@@ -17,6 +19,7 @@ import org.json.JSONObject;
 
 public class Utilities {
 	
+	//returns JSON information from given URL
 	public static StringBuilder fetchData(String URL){
 		
 		StringBuilder builder = new StringBuilder();	
@@ -51,6 +54,7 @@ public class Utilities {
 		return builder;
 	}
 	
+	//iterates through numbered 2D JSON object and returns in ordered array
 	public static String[] iterateThroughJson(String jsonObject, String objectName, String sizeName){
 		
 		String [] values = null;
@@ -79,6 +83,7 @@ public class Utilities {
 		return values;
 	}
 	
+	//converts JSON string (not object) to an ArrayList
 	public static ArrayList<String> jsonStringToArray(String jsonString) throws JSONException {
 
 	    ArrayList<String> stringArray = new ArrayList<String>();
@@ -90,5 +95,17 @@ public class Utilities {
 	    }
 
 	    return stringArray;
+	}
+	
+	//Creates search string and it encodes it from an array list of ingredients
+	public static String arrayToSearchString(ArrayList<String> ingredients) throws UnsupportedEncodingException{
+		
+		String searchTerm = "";
+		
+		for (int i = 0; i < ingredients.size(); i++){
+			searchTerm += URLEncoder.encode("\"" + ingredients.get(i) + "\"*", "UTF-8");
+		}
+		
+		return searchTerm;
 	}
 }

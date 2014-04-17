@@ -4,16 +4,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.json.JSONException;
-
 import com.google.gson.Gson;
-
 import android.support.v4.app.NavUtils;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,7 +24,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.os.Build;
 
-public class MyPantryActivity extends Activity {
+public class MyPantryActivity extends Activity implements AsyncResponse {
 	
 	Button addButton;
 	Button deleteButton;
@@ -55,9 +54,10 @@ public class MyPantryActivity extends Activity {
 			e.printStackTrace();
 		}
 		
-		new GetAllIngredients().execute(); //populates auto complete
-		
-		addButton = (Button)findViewById(R.id.addIngredientButton);
+	    new GetAllIngredients(this).execute(); //populate auto complete
+	    
+		// declare xml elements
+	    addButton = (Button)findViewById(R.id.addIngredientButton);
 		deleteButton = (Button)findViewById(R.id.deleteButton);
 	    editText = (EditText)findViewById(R.id.ingredientsSearch);
 	    listView = (ListView)findViewById(R.id.ingredientList);
@@ -73,6 +73,8 @@ public class MyPantryActivity extends Activity {
 				
 				String input = editText.getText().toString();
 				
+				//adds ingredient to pantry list if it exists in db and not already on list
+				//saves pantry list to phone
 				if (Arrays.asList(allIngredients).contains(input) && !(pantryList.contains(input))) {
 			        adapter.add(input);	        
 			        String pantryObject = new Gson().toJson(pantryList);       
@@ -84,7 +86,8 @@ public class MyPantryActivity extends Activity {
 	    
 	    deleteButton.setOnClickListener(new View.OnClickListener(){
 
-			@Override
+	    	//delete selected items from list and updates pantry list saved on phone
+	    	@Override
 			public void onClick(View arg0) {
 				
                 SparseBooleanArray checkedItemPositions = listView.getCheckedItemPositions();
@@ -96,9 +99,9 @@ public class MyPantryActivity extends Activity {
                 }
                 
                 checkedItemPositions.clear();
-                adapter.notifyDataSetChanged();
                 String pantryObject = new Gson().toJson(pantryList);       
-		        prefs.edit().putString("reverseRecipe.savedPantry", pantryObject).commit(); 		
+		        prefs.edit().putString("reverseRecipe.savedPantry", pantryObject).commit(); 
+		        adapter.notifyDataSetChanged();
 			}    	
 	    });
 	}
@@ -126,30 +129,47 @@ public class MyPantryActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 	
-	private class GetAllIngredients extends AsyncTask<String, Void, String>{
+	//goes to search activity and starts a search with selected pantry ingredients
+	public void GoToSearchRecipes(View view) {
 		
-		protected String doInBackground(String... id) {
-			
-			String ingredientsURL = "http://www.reverserecipe.host22.com/api/?tag=getAllIngredients";
+		//bundle stores the selected ingredients
+		Intent intent_recipes = new Intent(this,SearchActivity.class);
+		Bundle bundle = new Bundle();
+		ArrayList<String> ingredientsSelected = new ArrayList<String>();
+		
+		SparseBooleanArray checkedItemPositions = listView.getCheckedItemPositions();
+		 
+        //get all selected ingredients
+		for (int i = listView.getCount() - 1; i >= 0; i--){
+            if (checkedItemPositions.get(i)){
+                ingredientsSelected.add(pantryList.get(i));
+            }
+        }
+        
+        checkedItemPositions.clear();
+        Log.v("", ingredientsSelected.get(0));
+		
+		//add selected ingredients to bundle and start activity
+        bundle.putStringArrayList("searchTerms", ingredientsSelected);
+		intent_recipes.putExtras(bundle);
+		startActivity(intent_recipes);
+	}
 
-			return Utilities.fetchData(ingredientsURL).toString();
-		}
+	//Method from AsyncResponse interface
+	@Override
+	public void responseObtained(String output) {
 		
-		protected void onPostExecute(String info) {
-			super.onPostExecute(info);
-			
-			AutoCompleteTextView autoComplete;
-			ArrayAdapter<String> adapter;
-			
-			allIngredients = Utilities.iterateThroughJson(info,"ingredients", "number of ingredients");
-			
-			adapter = new ArrayAdapter<String>(MyPantryActivity.this,android.R.layout.simple_list_item_1, allIngredients);
-			
-			autoComplete = (AutoCompleteTextView) findViewById(R.id.ingredientsSearch);	
-			autoComplete.setAdapter(adapter);
-			autoComplete.setThreshold(2);
-			
-		}
+		AutoCompleteTextView autoComplete;
+		ArrayAdapter<String> adapter;
+		
+		allIngredients = Utilities.iterateThroughJson(output,"ingredients", "number of ingredients");
+		
+		adapter = new ArrayAdapter<String>(MyPantryActivity.this,android.R.layout.simple_list_item_1, allIngredients);
+		
+		//add all ingredients to auto complete
+		autoComplete = (AutoCompleteTextView) findViewById(R.id.ingredientsSearch);	
+		autoComplete.setAdapter(adapter);
+		autoComplete.setThreshold(2); //2 characters before suggesting
 	}
 
 }

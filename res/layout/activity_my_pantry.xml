@@ -12,7 +12,8 @@
 		android:id="@+id/ingredientsSearch"
 		android:layout_width="220dp"
        	android:layout_height="wrap_content"
-		android:layout_marginTop="20dp"/>
+		android:layout_marginTop="20dp"
+		android:hint="Add an Ingredient"/>
     
     <Button
 		android:id="@+id/addIngredientButton"
@@ -50,6 +51,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:text="@string/search_recipes"
+        android:onClick="GoToSearchRecipes"
     	android:layout_toRightOf="@+id/deleteButton" />
     
 </RelativeLayout>

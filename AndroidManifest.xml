@@ -30,18 +30,18 @@
             android:parentActivityName="com.example.kawtoolkit.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.kawtoolkit.MainActivity" />
+                android:value="reverse.recipe.reverserecipe.MainActivity" />
         </activity>
         <activity
-            android:name="reverse.recipe.reverserecipe.DisplayRecipeActivity"
+    		android:name="reverse.recipe.reverserecipe.DisplayRecipeActivity"
             android:label="@string/title_activity_display_recipe"
             android:parentActivityName="com.example.kawtoolkit.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.kawtoolkit.MainActivity" />
+                android:value="reverse.recipe.reverserecipe.MainActivity" />
         </activity>
         <activity
-            android:name="reverse.recipe.reverserecipe.IngredientSearchActivity"
+        	android:name="reverse.recipe.reverserecipe.IngredientSearchActivity"
             android:label="@string/title_activity_ingredient_search"
             android:parentActivityName="reverse.recipe.reverserecipe.MainActivity" >
             <meta-data
@@ -49,7 +49,7 @@
                 android:value="reverse.recipe.reverserecipe.MainActivity" />
         </activity>
         <activity
-            android:name="reverse.recipe.reverserecipe.MyPantryActivity"
+ 			android:name="reverse.recipe.reverserecipe.MyPantryActivity"
             android:label="@string/title_activity_my_pantry"
             android:parentActivityName="reverse.recipe.reverserecipe.MainActivity" >
             <meta-data
