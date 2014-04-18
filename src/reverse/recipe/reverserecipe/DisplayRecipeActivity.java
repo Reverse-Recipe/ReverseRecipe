@@ -1,7 +1,11 @@
 package reverse.recipe.reverserecipe;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import reverse.recipe.reverserecipe.R;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -12,6 +16,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 
 public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 
@@ -105,11 +112,41 @@ public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 		recipe.setMethod(Utilities.iterateThroughJson(recipeMethod, "steps", "number of steps"));
 		//recipe.setNutritionInfo(Utilities.iterateThroughJson(recipeNutrition, "nutrition labels", "number of labels"));
 		
-		//lets see if it worked
+		fillRecipeLayout(recipe);
+	}
+	
+	public void fillRecipeLayout(RecipeDetails recipe){
+		TextView recipeTitle = (TextView) findViewById(R.id.recipeTitle);
+		TextView recipeAuthor = (TextView) findViewById(R.id.recipeAuthor);
+		TextView recipeDifficulty = (TextView) findViewById(R.id.recipeDifficulty);
+		TextView recipePrepTime = (TextView) findViewById(R.id.recipePrepTime);
+		TextView recipeCookTime = (TextView) findViewById(R.id.recipeCookTime);
+		TextView recipeRating = (TextView) findViewById(R.id.recipeRating);
+		TextView recipeYield = (TextView) findViewById(R.id.recipeYield);
+		TextView ingredientList = (TextView) findViewById(R.id.ingredientList);
+		TextView methodList = (TextView) findViewById(R.id.methodList);
 		
-		Log.v("", recipe.getTitle());
-		Log.v("", recipe.getIngredients()[0]);
-		Log.v("", recipe.getMethod()[0]);
-		//Log.v("", String.valueOf(recipe.getNutritionInfo().length));	
+		String[] ingredients = recipe.getIngredients();
+		String[] method = recipe.getMethod();
+		String ingredientsFormattedText = "";
+		String methodFormattedText = "";
+		
+		for (int i = 0; i < ingredients.length; i++){
+			ingredientsFormattedText += ingredients[i] + "\n";
+		}
+		
+		for (int i = 0; i < method.length; i++){
+			methodFormattedText += Integer.toString(i + 1) + ". " + method[i] + "\n\n";
+		}
+		
+		recipeTitle.setText(recipe.getTitle());
+		recipeAuthor.setText("Author: " + Integer.toString(recipe.getAuthorId()));
+		recipeDifficulty.setText("Difficulty: " + recipe.getDifficulty());
+		recipePrepTime.setText("Prep Time: " + Integer.toString(recipe.getPrepTime()));
+		recipeCookTime.setText("Cook Time: " + Integer.toString(recipe.getCookTime()));
+		recipeRating.setText("Rating: " + Integer.toString(recipe.getRating()));
+		recipeYield.setText("Yield: " + recipe.getYield());
+		ingredientList.setText(ingredientsFormattedText);
+		methodList.setText(methodFormattedText);
 	}
 }

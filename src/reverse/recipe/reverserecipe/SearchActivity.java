@@ -120,7 +120,6 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 				
 				String[] extraSections = extrasText.split("         Relevance");
 				String recipeId = extraSections[0].replaceAll("\\D+","");
-				
 				//end bad solution
 				
 				bundle.putString("recipeId", recipeId);

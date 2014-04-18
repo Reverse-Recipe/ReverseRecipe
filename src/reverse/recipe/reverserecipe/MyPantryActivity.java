@@ -147,7 +147,6 @@ public class MyPantryActivity extends Activity implements AsyncResponse {
         }
         
         checkedItemPositions.clear();
-        Log.v("", ingredientsSelected.get(0));
 		
 		//add selected ingredients to bundle and start activity
         bundle.putStringArrayList("searchTerms", ingredientsSelected);

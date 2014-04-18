@@ -10,6 +10,8 @@
     <string name="display_recipe">View Recipe</string>
     <string name="title_activity_ingredient_search">Search Ingredients</string>
     <string name="search_ingredients">Search Ingredients</string>
+    <string name="ingredients_label">Ingredients</string>
+    <string name="method_label">Method</string>
     <string name="add_ingredient">Add</string>
     <string name="title_activity_my_pantry">My Pantry</string>
     <string name="my_pantry">My Pantry</string>
