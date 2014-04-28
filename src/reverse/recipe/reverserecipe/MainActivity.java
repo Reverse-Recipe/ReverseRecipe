@@ -22,16 +22,6 @@ public class MainActivity extends Activity {
 		return true;
 	}
 	
-	public void GoToSearchRecipes(View view) {
-		Intent intent_recipes = new Intent(this,SearchActivity.class);
-		startActivity(intent_recipes);
-	}
-	
-	public void GoToDisplayRecipe(View view) {
-		Intent intent_recipes = new Intent(this,DisplayRecipeActivity.class);
-		startActivity(intent_recipes);
-	}
-	
 	public void GoToSearchIngredients(View view) {
 		Intent intent_recipes = new Intent(this,IngredientSearchActivity.class);
 		startActivity(intent_recipes);

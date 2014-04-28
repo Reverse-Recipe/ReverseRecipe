@@ -258,7 +258,7 @@ int id default_activity_button 0x7f050028
 int id deleteButton 0x7f050051
 int id dialog 0x7f05000e
 int id disableHome 0x7f050008
-int id displayRecipeButton 0x7f05004e
+int id displayRecipeButton 0x7f05004f
 int id dropdown 0x7f05000f
 int id edit_query 0x7f050030
 int id end 0x7f050013
@@ -295,8 +295,8 @@ int id recipeTitle 0x7f05003c
 int id recipeYield 0x7f050044
 int id searchArea 0x7f05004a
 int id searchButton 0x7f050052
-int id searchIngredientsButton 0x7f05004f
-int id searchRecipesButton 0x7f05004d
+int id searchIngredientsButton 0x7f05004d
+int id searchRecipesButton 0x7f05004e
 int id search_badge 0x7f050032
 int id search_bar 0x7f050031
 int id search_button 0x7f050033

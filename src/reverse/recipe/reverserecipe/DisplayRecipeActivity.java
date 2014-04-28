@@ -1,8 +1,5 @@
 package reverse.recipe.reverserecipe;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -16,8 +13,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
 public class DisplayRecipeActivity extends Activity implements AsyncResponse {

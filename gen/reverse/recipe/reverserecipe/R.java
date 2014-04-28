@@ -1107,7 +1107,7 @@ containing a value of this type.
         public static final int deleteButton=0x7f050051;
         public static final int dialog=0x7f05000e;
         public static final int disableHome=0x7f050008;
-        public static final int displayRecipeButton=0x7f05004e;
+        public static final int displayRecipeButton=0x7f05004f;
         public static final int dropdown=0x7f05000f;
         public static final int edit_query=0x7f050030;
         public static final int end=0x7f050013;
@@ -1144,8 +1144,8 @@ containing a value of this type.
         public static final int recipeYield=0x7f050044;
         public static final int searchArea=0x7f05004a;
         public static final int searchButton=0x7f050052;
-        public static final int searchIngredientsButton=0x7f05004f;
-        public static final int searchRecipesButton=0x7f05004d;
+        public static final int searchIngredientsButton=0x7f05004d;
+        public static final int searchRecipesButton=0x7f05004e;
         public static final int search_badge=0x7f050032;
         public static final int search_bar=0x7f050031;
         public static final int search_button=0x7f050033;
