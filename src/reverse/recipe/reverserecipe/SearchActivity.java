@@ -1,6 +1,5 @@
 package reverse.recipe.reverserecipe;
 
-
 import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -80,26 +79,10 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 		return super.onOptionsItemSelected(item);
 	}
 
-	//Method Called By Search Recipe Button Click
-	public void searchRecipes(View view) {
-		
-		//Create List Adapter for Results
-		ArrayList<Recipe> arrayOfRecipes = new ArrayList<Recipe>();
-		// Create the adapter to convert the array to views
-		adapter = new recipeArrayAdapter(this, arrayOfRecipes);
-		// Attach the adapter to a ListView
-		setListAdapter(adapter);
-		
-		String recipeSearchStr;
-		recipeSearchStr = "http://www.reverserecipe.host22.com/api/?tag=searchRecipes&ingreds="; //Default Web Address
-		recipeSearchStr += "cheese%2A+bacon"; //Add Ingredients Here
-		new GetRecipeSearchResults(this).execute(recipeSearchStr); //Execute Search
-	}
-	
 	public void searchWithIntentExtras() throws UnsupportedEncodingException{
 		
 		Bundle bundle = getIntent().getExtras();
-		ArrayList<Recipe> arrayOfRecipes = new ArrayList<Recipe>();
+		final ArrayList<Recipe> arrayOfRecipes = new ArrayList<Recipe>();
 		String recipeSearchStr;
 		
 		searchIngredients = bundle.getStringArrayList("searchTerms");
@@ -114,14 +97,7 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 				Intent intent = new Intent(SearchActivity.this, DisplayRecipeActivity.class);
 				Bundle bundle = new Bundle();
 				
-				//we will have a better way to do this, was just fast solution
-				TextView extrasView = (TextView) view.findViewById(R.id.extrasLabel);
-				String extrasText = extrasView.getText().toString();
-				
-				String[] extraSections = extrasText.split("         Relevance");
-				String recipeId = extraSections[0].replaceAll("\\D+","");
-				//end bad solution
-				
+				String recipeId = String.valueOf(arrayOfRecipes.get(pos).ID); 
 				bundle.putString("recipeId", recipeId);
 				
 				intent.putExtras(bundle);
