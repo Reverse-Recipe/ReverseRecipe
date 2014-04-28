@@ -12,6 +12,7 @@ import reverse.recipe.reverserecipe.R;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,6 +32,7 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 	ArrayList<String> searchIngredients;
 	boolean[] hasImage = new boolean[30]; //Stores which recipes have an image (to load later)
 	Bitmap defaultImage;
+	ProgressDialog loadingDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +87,10 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 
 	public void searchWithIntentExtras() throws UnsupportedEncodingException{
 
+		loadingDialog = new ProgressDialog(SearchActivity.this);
+		loadingDialog.setMessage("Finding Your Results");
+		loadingDialog.show();
+
 		Bundle bundle = getIntent().getExtras();
 		final ArrayList<Recipe> arrayOfRecipes = new ArrayList<Recipe>();
 		String recipeSearchStr;
@@ -134,7 +140,7 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 
 			DecimalFormat dec = new DecimalFormat("0.00");
 			this.Relevance = Double.parseDouble(dec.format(relevanceT)); //Round to 2 decimals
-		
+
 			this.imageURL = imageURLT;
 			this.Image = imageT;
 		}
@@ -179,13 +185,15 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 					jse.printStackTrace();
 				}
 			}
-			
-				//Download Recipe Image's
- 				for (int p=0; p<30; p++) {
- 					if (hasImage[p]) {
- 						new DownloadImageTask(p).execute(adapter.getItem(p).imageURL);
- 					}
- 				}
+
+			loadingDialog.dismiss();
+
+			//Download Recipe Image's
+			for (int p=0; p<30; p++) {
+				if (hasImage[p]) {
+					new DownloadImageTask(p).execute(adapter.getItem(p).imageURL);
+				}
+			}
 
 		}
 		catch (Exception e) {
@@ -193,30 +201,30 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 		}		
 	}
 
- 	//Downloads Images From URL
-  	private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {		
- 		int ItemNum;
- 		
- 		public DownloadImageTask(int itemNum) {
- 			this.ItemNum = itemNum;
- 		}
-  
-  	    protected Bitmap doInBackground(String... urls) {
-  	        String urldisplay = urls[0];
-  	        Bitmap mIcon11 = null;
-  	        try {
-  	            InputStream in = new java.net.URL(urldisplay).openStream();
-  	            mIcon11 = BitmapFactory.decodeStream(in);
-  	        } catch (Exception e) {
-  	            e.printStackTrace();
-  	        }
-  	        return mIcon11;
-  	    }
-  
-  	    protected void onPostExecute(Bitmap result) {
-  	    	super.onPostExecute(result);
- 	    	adapter.getItem(ItemNum).Image = result;
- 			adapter.notifyDataSetChanged();
-  	    }
-  	}
+	//Downloads Images From URL
+	private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {		
+		int ItemNum;
+
+		public DownloadImageTask(int itemNum) {
+			this.ItemNum = itemNum;
+		}
+
+		protected Bitmap doInBackground(String... urls) {
+			String urldisplay = urls[0];
+			Bitmap mIcon11 = null;
+			try {
+				InputStream in = new java.net.URL(urldisplay).openStream();
+				mIcon11 = BitmapFactory.decodeStream(in);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return mIcon11;
+		}
+
+		protected void onPostExecute(Bitmap result) {
+			super.onPostExecute(result);
+			adapter.getItem(ItemNum).Image = result;
+			adapter.notifyDataSetChanged();
+		}
+	}
 }

@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import reverse.recipe.reverserecipe.R;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.widget.TextView;
 
 public class DisplayRecipeActivity extends Activity implements AsyncResponse {
+	ProgressDialog loadingDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +63,10 @@ public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 	}
 	
 	public void displayRecipeWithIntentExtras() {
+		
+		loadingDialog = new ProgressDialog(DisplayRecipeActivity.this);
+		loadingDialog.setMessage("Retrieving Recipe");
+		loadingDialog.show();
 		
 		Bundle bundle = getIntent().getExtras();
 		String recipeId = bundle.getString("recipeId");
@@ -143,5 +149,7 @@ public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 		recipeYield.setText("Yield: " + recipe.getYield());
 		ingredientList.setText(ingredientsFormattedText);
 		methodList.setText(methodFormattedText);
+		
+		loadingDialog.dismiss();
 	}
 }
