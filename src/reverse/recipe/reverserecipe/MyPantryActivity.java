@@ -2,6 +2,7 @@ package reverse.recipe.reverserecipe;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 
 import org.json.JSONException;
 
@@ -78,7 +79,7 @@ public class MyPantryActivity extends Fragment implements AsyncResponse {
 			@Override
 			public void onClick(View arg0) {
 				
-				String input = editText.getText().toString();
+				String input = editText.getText().toString().toLowerCase(Locale.ENGLISH);
 				
 				//adds ingredient to pantry list if it exists in db and not already on list
 				//saves pantry list to phone

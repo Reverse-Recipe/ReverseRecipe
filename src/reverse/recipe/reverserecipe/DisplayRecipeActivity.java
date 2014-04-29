@@ -6,11 +6,16 @@ import org.json.JSONObject;
 import reverse.recipe.reverserecipe.R;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,7 +32,9 @@ public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 		setupActionBar();
 		
 		if (getIntent().hasExtra("recipeId")){
-			displayRecipeWithIntentExtras();	
+			if (isOnline()) {
+				displayRecipeWithIntentExtras();	
+			}
 		}
 	}
 	
@@ -78,15 +85,20 @@ public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 	@Override
 	public void responseObtained(String output) {
 		
-		String[] recipeSections = output.split("<!-- End Of Analytics Code -->");
-		String recipeInfo = recipeSections[0];
-		String recipeIngredients = recipeSections[1];
-		String recipeMethod = recipeSections[2];
-		//String recipeNutrition = recipeSections[3];
-		RecipeDetails recipe = null;
-		
 		//create recipe object
 		try{
+			RecipeDetails recipe = null;
+			
+			String[] recipeSections = output.split("<!-- End Of Analytics Code -->");
+			String recipeInfo = recipeSections[0];
+			String recipeIngredients = "";
+			String recipeMethod = "";
+			
+			if (recipeSections.length > 1) {
+				recipeIngredients = recipeSections[1];
+				recipeMethod = recipeSections[2];
+				//String recipeNutrition = recipeSections[3];
+			}
 
 			JSONObject recipeObject = new JSONObject(recipeInfo);
 			
@@ -104,16 +116,15 @@ public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 			
 			recipe = new RecipeDetails(id, title, prepTime, inactiveTime, cookTime, difficulty, rating, yield, authorId, imageUrl, url);;
 			
+			//get the recipe ingredients and method
+			recipe.setIngredients(Utilities.iterateThroughJson(recipeIngredients, "Ingredients", "number of ingredients"));
+			recipe.setMethod(Utilities.iterateThroughJson(recipeMethod, "steps", "number of steps"));
+			//recipe.setNutritionInfo(Utilities.iterateThroughJson(recipeNutrition, "nutrition labels", "number of labels"));
+			
+			fillRecipeLayout(recipe);
 		} catch(JSONException jse){
 			jse.printStackTrace();
 		}
-		
-		//get the recipe ingredients and method
-		recipe.setIngredients(Utilities.iterateThroughJson(recipeIngredients, "Ingredients", "number of ingredients"));
-		recipe.setMethod(Utilities.iterateThroughJson(recipeMethod, "steps", "number of steps"));
-		//recipe.setNutritionInfo(Utilities.iterateThroughJson(recipeNutrition, "nutrition labels", "number of labels"));
-		
-		fillRecipeLayout(recipe);
 	}
 	
 	public void fillRecipeLayout(RecipeDetails recipe){
@@ -151,5 +162,37 @@ public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 		methodList.setText(methodFormattedText);
 		
 		loadingDialog.dismiss();
+	}
+	
+	public boolean isOnline() {
+	    ConnectivityManager conMgr = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+	    NetworkInfo netInfo = conMgr.getActiveNetworkInfo();
+
+	    if(netInfo == null || !netInfo.isConnected() || !netInfo.isAvailable()){
+		    final AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_DARK);
+		    builder.setMessage("No Internet Connection Found! Connect to Internet?")
+		           .setCancelable(true)
+		           .setPositiveButton("No", new DialogInterface.OnClickListener() {
+		               public void onClick(final DialogInterface dialog, final int id) {
+		                    dialog.cancel();
+		                    finish();
+		               }
+		           })
+		           .setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+		               public void onClick(final DialogInterface dialog, final int id) {
+		            	   try {
+		                   startActivity(new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS));
+		                   finish();
+		            	   } catch (Exception e) {
+		            		   e.printStackTrace();
+		            	   }
+		               		
+		               }
+		           });
+		    final AlertDialog alert = builder.create();
+		    alert.show();
+	        return false;
+	    }
+	return true; 
 	}
 }

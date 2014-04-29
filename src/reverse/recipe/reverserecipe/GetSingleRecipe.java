@@ -17,7 +17,7 @@ public class GetSingleRecipe extends AsyncTask<String, Void, String>{
 		String recipeURL = "http://www.reverserecipe.host22.com/api/?tag=getRecipe&id=" + id[0];
 		String ingredientsURL = "http://www.reverserecipe.host22.com/api/?tag=getRecipeIngredients&id=" + id[0];
 		String methodURL = "http://www.reverserecipe.host22.com/api/?tag=getRecipeMethod&id=" + id[0];
-		String nutritionURL = "http://www.reverserecipe.host22.com/api/?tag=getNutritionInfo&id=" + id[0];
+		//String nutritionURL = "http://www.reverserecipe.host22.com/api/?tag=getNutritionInfo&id=" + id[0];
 
 		return Utilities.fetchData(recipeURL).toString() + 
 				Utilities.fetchData(ingredientsURL).toString() +

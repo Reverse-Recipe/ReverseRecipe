@@ -9,8 +9,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import reverse.recipe.reverserecipe.R;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.view.Menu;
@@ -21,6 +24,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.support.v4.app.NavUtils;
 import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -44,7 +49,9 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 		//get ingredients selected from pantry and execute search
 		if (getIntent().hasExtra("searchTerms")){
 			try {
-				searchWithIntentExtras();
+				if (isOnline()) {
+					searchWithIntentExtras();
+				}
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}	
@@ -199,6 +206,38 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 		catch (Exception e) {
 			e.printStackTrace();
 		}		
+	}
+	
+	public boolean isOnline() {
+	    ConnectivityManager conMgr = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+	    NetworkInfo netInfo = conMgr.getActiveNetworkInfo();
+
+	    if(netInfo == null || !netInfo.isConnected() || !netInfo.isAvailable()){
+		    final AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_DARK);
+		    builder.setMessage("No Internet Connection Found! Connect to Internet?")
+		           .setCancelable(true)
+		           .setPositiveButton("No", new DialogInterface.OnClickListener() {
+		               public void onClick(final DialogInterface dialog, final int id) {
+		                    dialog.cancel();
+		                    finish();
+		               }
+		           })
+		           .setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+		               public void onClick(final DialogInterface dialog, final int id) {
+		            	   try {
+		                   startActivity(new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS));
+		                   finish();
+		            	   } catch (Exception e) {
+		            		   e.printStackTrace();
+		            	   }
+		               		
+		               }
+		           });
+		    final AlertDialog alert = builder.create();
+		    alert.show();
+	        return false;
+	    }
+	return true; 
 	}
 
 	//Downloads Images From URL

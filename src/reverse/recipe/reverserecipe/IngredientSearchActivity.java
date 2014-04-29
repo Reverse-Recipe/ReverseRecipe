@@ -2,6 +2,8 @@ package reverse.recipe.reverserecipe;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
+
 import reverse.recipe.reverserecipe.R;
 import android.content.Intent;
 import android.os.Bundle;
@@ -59,7 +61,7 @@ public class IngredientSearchActivity extends Fragment implements AsyncResponse 
 			@Override
 			public void onClick(View arg0) {
 
-				String input = editText.getText().toString();
+				String input = editText.getText().toString().toLowerCase(Locale.ENGLISH);
 
 				//adds ingredients to list if they exist in database and are not already on list
 				if (Arrays.asList(allIngredients).contains(input) && !(ingredientList.contains(input))) {
@@ -122,6 +124,5 @@ public class IngredientSearchActivity extends Fragment implements AsyncResponse 
 		} catch (Exception e) {
 
 		}
-
 	}
 }
