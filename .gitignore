@@ -2,3 +2,10 @@ gen/android/support/v7/appcompat/R.java
 bin/jarlist.cache
 gen/reverse/recipe/reverserecipe/BuildConfig.java
 project.properties
+gen/android/support/v7/appcompat/R.java
+gen/reverse/recipe/reverserecipe/BuildConfig.java
+bin/dexedLibs/android-support-v4-70618a9738decd919f62d62d3f657fc7.jar
+bin/dexedLibs/android-support-v7-appcompat-06d2e0275140acb70748616f7c655f18.jar
+bin/dexedLibs/android-support-v7-appcompat-0f9a491b6ac7f7a29d9aabb6fcd103dc.jar
+*.jar
+*.apk
