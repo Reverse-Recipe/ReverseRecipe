@@ -87,6 +87,7 @@ public class MyPantryActivity extends Fragment implements AsyncResponse {
 			        String pantryObject = new Gson().toJson(pantryList);       
 			        prefs.edit().putString("reverseRecipe.savedPantry", pantryObject).commit(); 
 			        adapter.notifyDataSetChanged();
+			        editText.setText("");
 			    }				
 			}   	
 	    });

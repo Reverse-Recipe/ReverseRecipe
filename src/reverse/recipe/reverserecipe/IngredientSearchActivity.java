@@ -64,6 +64,8 @@ public class IngredientSearchActivity extends Fragment implements AsyncResponse 
 				//adds ingredients to list if they exist in database and are not already on list
 				if (Arrays.asList(allIngredients).contains(input) && !(ingredientList.contains(input))) {
 					adapter.add(input);
+			        adapter.notifyDataSetChanged();
+					editText.setText("");
 				}				
 			}   	
 		});
