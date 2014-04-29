@@ -4,29 +4,6 @@
     android:layout_height="wrap_content"
     tools:context=".MyPantryActivity" >
 
-    <LinearLayout
-        android:id="@+id/topPantryBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
-
-        <AutoCompleteTextView
-            android:id="@+id/ingredientsSearch"
-            android:layout_width="220dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="10dp"
-            android:hint="@string/add_ingredient_hint" />
-
-        <Button
-            android:id="@+id/addIngredientButton"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:text="@string/add_ingredient"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp" />
-    </LinearLayout>
-
     <ListView
         android:id="@+id/ingredientList"
         android:layout_width="fill_parent"
@@ -57,6 +34,35 @@
             android:onClick="GoToSearchRecipes"
             android:text="@string/search_recipes"
             android:layout_marginRight="5dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/topPantryBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:orientation="horizontal" >
+
+        <AutoCompleteTextView
+            android:id="@+id/ingredientsSearch"
+            android:layout_width="220dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="15dp"
+            android:hint="@string/add_ingredient_hint"
+            android:textSize="22sp" >
+
+            <requestFocus />
+        </AutoCompleteTextView>
+
+        <Button
+            android:id="@+id/addIngredientButton"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="2dp"
+            android:text="@string/add_ingredient" />
     </LinearLayout>
 
 </RelativeLayout>
