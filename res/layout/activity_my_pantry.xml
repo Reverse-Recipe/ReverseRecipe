@@ -3,51 +3,60 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:context=".MyPantryActivity" >
-    
-    <AutoCompleteTextView
-		android:id="@+id/ingredientsSearch"
-		android:layout_width="220dp"
-       	android:layout_height="wrap_content"
-		android:layout_marginTop="20dp"
-		android:hint="@string/add_ingredient_hint"/>
-    
-    <Button
-		android:id="@+id/addIngredientButton"
-	    android:layout_width="fill_parent"
-       	android:layout_height="wrap_content"
-	    android:text="@string/add_ingredient"
-	    android:layout_toRightOf="@+id/ingredientsSearch" />
-    
-    <TextView
-       android:id="@android:id/empty"
-       android:layout_width="fill_parent"
-       android:layout_height="wrap_content"
-       android:layout_below="@+id/ingredientsSearch"
-       android:gravity="center_horizontal"/>
-    
+
+    <LinearLayout
+        android:id="@+id/topPantryBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <AutoCompleteTextView
+            android:id="@+id/ingredientsSearch"
+            android:layout_width="220dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
+            android:hint="@string/add_ingredient_hint" />
+
+        <Button
+            android:id="@+id/addIngredientButton"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text="@string/add_ingredient"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp" />
+    </LinearLayout>
+
     <ListView
         android:id="@+id/ingredientList"
-	    android:layout_width="fill_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-	    android:layout_below="@+id/ingredientsSearch"
-	    android:layout_above="@+id/deleteButton"
-	    android:choiceMode="multipleChoice" >
-	</ListView>
-    
-    <Button
-        android:id="@+id/deleteButton"
-        android:layout_width="110dp"
+        android:choiceMode="multipleChoice" 
+        android:layout_below="@+id/topPantryBar"
+        android:layout_above="@+id/bottomPantryBar">
+    </ListView>
+
+    <LinearLayout
+        android:id="@+id/bottomPantryBar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:text="@string/delete" />
-    
-    <Button
-        android:id="@+id/searchButton"
-        android:layout_width="180dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:text="@string/search_recipes"
-        android:onClick="GoToSearchRecipes"
-    	android:layout_toRightOf="@+id/deleteButton" />
-    
+        android:orientation="horizontal" 
+        android:layout_alignParentBottom="true">
+
+        <Button
+            android:id="@+id/deleteButton"
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
+            android:text="@string/delete"
+            android:layout_marginLeft="5dp" />
+
+        <Button
+            android:id="@+id/searchButton"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:onClick="GoToSearchRecipes"
+            android:text="@string/search_recipes"
+            android:layout_marginRight="5dp" />
+    </LinearLayout>
+
 </RelativeLayout>
