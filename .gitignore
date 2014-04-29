@@ -9,3 +9,5 @@ bin/dexedLibs/android-support-v7-appcompat-06d2e0275140acb70748616f7c655f18.jar
 bin/dexedLibs/android-support-v7-appcompat-0f9a491b6ac7f7a29d9aabb6fcd103dc.jar
 *.jar
 *.apk
+gen/android/support/v7/appcompat/R.java
+gen/reverse/recipe/reverserecipe/BuildConfig.java
