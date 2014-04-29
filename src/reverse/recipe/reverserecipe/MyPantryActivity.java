@@ -46,6 +46,13 @@ public class MyPantryActivity extends Fragment implements AsyncResponse {
 	}
 	
 	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+        adapter.notifyDataSetChanged();
+	}
+	
+	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onViewCreated(view, savedInstanceState);
