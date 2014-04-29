@@ -4,30 +4,29 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.json.JSONException;
+
 import com.google.gson.Gson;
-import android.support.v4.app.NavUtils;
-import android.annotation.TargetApi;
-import android.app.Activity;
+
+import reverse.recipe.reverserecipe.R;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.app.Fragment;
 import android.util.SparseBooleanArray;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.os.Build;
 
-public class MyPantryActivity extends Activity implements AsyncResponse {
-	
+public class MyPantryActivity extends Fragment implements AsyncResponse {
 	Button addButton;
 	Button deleteButton;
+	Button searchButton;
 	EditText editText;
 	ArrayList<String> pantryList;
 	String savedPantry;
@@ -37,14 +36,21 @@ public class MyPantryActivity extends Activity implements AsyncResponse {
 	SharedPreferences prefs;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+
+		View rootView = inflater.inflate(R.layout.activity_my_pantry, container, false);
 		
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_my_pantry);
-		setupActionBar();
+		return rootView;
+	}
+	
+	@Override
+	public void onViewCreated(View view, Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onViewCreated(view, savedInstanceState);
 		
 		//gets items already saved
-		prefs = this.getSharedPreferences("reverseRecipe", Context.MODE_PRIVATE);
+		prefs = getView().getContext().getSharedPreferences("reverseRecipe", Context.MODE_PRIVATE);
 		savedPantry = prefs.getString("reverseRecipe.savedPantry", "Didnt work");
 		pantryList = new ArrayList<String>();
 		
@@ -57,13 +63,14 @@ public class MyPantryActivity extends Activity implements AsyncResponse {
 	    new GetAllIngredients(this).execute(); //populate auto complete
 	    
 		// declare xml elements
-	    addButton = (Button)findViewById(R.id.addIngredientButton);
-		deleteButton = (Button)findViewById(R.id.deleteButton);
-	    editText = (EditText)findViewById(R.id.ingredientsSearch);
-	    listView = (ListView)findViewById(R.id.ingredientList);
+	    addButton = (Button)getView().findViewById(R.id.addIngredientButton);
+		deleteButton = (Button)getView().findViewById(R.id.deleteButton);
+	    editText = (EditText)getView().findViewById(R.id.ingredientsSearch);
+	    listView = (ListView)getView().findViewById(R.id.ingredientList);
+	    searchButton = (Button)getView().findViewById(R.id.searchButton);
 	    
 	    //puts saved pantry ingredients into list view
-	    adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, pantryList);   
+	    adapter = new ArrayAdapter<String>(getView().getContext(), android.R.layout.simple_list_item_multiple_choice, pantryList);   
 	    listView.setAdapter(adapter);
 	    
 	    addButton.setOnClickListener(new View.OnClickListener(){
@@ -104,36 +111,22 @@ public class MyPantryActivity extends Activity implements AsyncResponse {
 		        adapter.notifyDataSetChanged();
 			}    	
 	    });
-	}
-	
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	private void setupActionBar() {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			getActionBar().setDisplayHomeAsUpEnabled(true);
-		}
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.my_pantry, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case android.R.id.home:
-			NavUtils.navigateUpFromSameTask(this);
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
+	    
+	    searchButton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				GoToSearchRecipes();
+			}
+		});
 	}
 	
 	//goes to search activity and starts a search with selected pantry ingredients
-	public void GoToSearchRecipes(View view) {
+	private void GoToSearchRecipes() {
 		
 		//bundle stores the selected ingredients
-		Intent intent_recipes = new Intent(this,SearchActivity.class);
+		Intent intent_recipes = new Intent(getView().getContext(),SearchActivity.class);
 		Bundle bundle = new Bundle();
 		ArrayList<String> ingredientsSelected = new ArrayList<String>();
 		
@@ -154,21 +147,25 @@ public class MyPantryActivity extends Activity implements AsyncResponse {
 		startActivity(intent_recipes);
 	}
 
-	//Method from AsyncResponse interface
 	@Override
 	public void responseObtained(String output) {
+		// TODO Auto-generated method stub
 		
+		try {
 		AutoCompleteTextView autoComplete;
 		ArrayAdapter<String> adapter;
 		
 		allIngredients = Utilities.iterateThroughJson(output,"ingredients", "number of ingredients");
 		
-		adapter = new ArrayAdapter<String>(MyPantryActivity.this,android.R.layout.simple_list_item_1, allIngredients);
+		adapter = new ArrayAdapter<String>(getView().getContext(),android.R.layout.simple_list_item_1, allIngredients);
 		
 		//add all ingredients to auto complete
-		autoComplete = (AutoCompleteTextView) findViewById(R.id.ingredientsSearch);	
+		autoComplete = (AutoCompleteTextView) getView().findViewById(R.id.ingredientsSearch);	
 		autoComplete.setAdapter(adapter);
 		autoComplete.setThreshold(2); //2 characters before suggesting
+		} catch (Exception e) {
+			
+		}
 	}
 
 }

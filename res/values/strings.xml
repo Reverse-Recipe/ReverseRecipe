@@ -18,5 +18,6 @@
     <string name="preference_file_key">Saved Pantry</string>
     <string name="delete">Delete</string>
     <string name="add_ingredient_hint">Add an Ingredient</string>
-
+    <string name="main_test">Main Test</string>
+    
 </resources>

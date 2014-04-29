@@ -1,12 +1,38 @@
 <resources>
 
-    <!--
-        Base application theme for API 14+. This theme completely replaces
-        AppBaseTheme from BOTH res/values/styles.xml and
-        res/values-v11/styles.xml on API 14+ devices.
-    -->
-    <style name="AppBaseTheme" parent="android:Theme.Holo.Light.DarkActionBar">
-        <!-- API 14 theme customizations can go here. -->
+   
+    <style name="Theme.Reverserecipe" parent="@style/Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:actionBarItemBackground">@drawable/selectable_background_reverserecipe</item>
+        <item name="android:popupMenuStyle">@style/PopupMenu.Reverserecipe</item>
+        <item name="android:dropDownListViewStyle">@style/DropDownListView.Reverserecipe</item>
+        <item name="android:actionBarTabStyle">@style/ActionBarTabStyle.Reverserecipe</item>
+        <item name="android:actionDropDownStyle">@style/DropDownNav.Reverserecipe</item>
+        <item name="android:actionBarStyle">@style/ActionBar.Solid.Reverserecipe</item>
+        <item name="android:actionModeBackground">@drawable/cab_background_top_reverserecipe</item>
+        <item name="android:actionModeSplitBackground">@drawable/cab_background_bottom_reverserecipe</item>
+        <item name="android:actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Reverserecipe</item>
+        
+                <!-- Light.DarkActionBar specific -->
+        <item name="android:actionBarWidgetTheme">@style/Theme.Reverserecipe.Widget</item>
+
+    </style>
+
+    <style name="ActionBar.Solid.Reverserecipe" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">@drawable/ab_background_textured_reverserecipe</item>
+        <item name="android:backgroundStacked">@drawable/ab_stacked_solid_reverserecipe</item>
+        <item name="android:backgroundSplit">@drawable/ab_background_textured_reverserecipe</item>
+        <item name="android:progressBarStyle">@style/ProgressBar.Reverserecipe</item>
+    </style>
+
+    <style name="ActionBar.Transparent.Reverserecipe" parent="@style/Widget.AppCompat.ActionBar">
+        <item name="android:background">@drawable/ab_transparent_reverserecipe</item>
+        <item name="android:progressBarStyle">@style/ProgressBar.Reverserecipe</item>
+    </style>
+    
+    <!-- this style is only referenced in a Light.DarkActionBar based theme -->
+    <style name="Theme.Reverserecipe.Widget" parent="@style/Theme.AppCompat">
+        <item name="android:popupMenuStyle">@style/PopupMenu.Reverserecipe</item>
+        <item name="android:dropDownListViewStyle">@style/DropDownListView.Reverserecipe</item>
     </style>
 
 </resources>
