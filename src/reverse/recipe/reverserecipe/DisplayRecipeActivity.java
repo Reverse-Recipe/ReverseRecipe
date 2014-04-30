@@ -47,20 +47,34 @@ public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-
-		getMenuInflater().inflate(R.menu.display_recipe, menu);
-		return true;
+		getMenuInflater().inflate(R.menu.main_menu_actions, menu);
+		return super.onCreateOptionsMenu(menu);
 	}
-
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case android.R.id.home:
-			NavUtils.navigateUpFromSameTask(this);
+		case R.id.action_home:
+			Intent homeIntent = new Intent(this,MainActivity.class);
+			startActivity(homeIntent);
 			return true;
+		case R.id.action_cookbook:
+			Intent cookbookIntent = new Intent(this,CookBookActivity.class);
+			startActivity(cookbookIntent);
+			return true;
+		case R.id.action_analytics:
+			Intent analyticsIntent = new Intent(this,AnalyticsActivity.class);
+			startActivity(analyticsIntent);
+			return true;
+		case R.id.action_shopping_list:
+			Intent shoppinglistIntent = new Intent(this,ShoppingListActivity.class);
+			startActivity(shoppinglistIntent);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
 		}
-		return super.onOptionsItemSelected(item);
 	}
+	
 	
 	public void displayRecipe(View view) {
 		

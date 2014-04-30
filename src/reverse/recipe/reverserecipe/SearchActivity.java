@@ -22,7 +22,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.support.v4.app.NavUtils;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -70,27 +69,34 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.search, menu);
-		return true;
+		getMenuInflater().inflate(R.menu.main_menu_actions, menu);
+		return super.onCreateOptionsMenu(menu);
 	}
-
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case android.R.id.home:
-			// This ID represents the Home or Up button. In the case of this
-			// activity, the Up button is shown. Use NavUtils to allow users
-			// to navigate up one level in the application structure. For
-			// more details, see the Navigation pattern on Android Design:
-			//
-			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
-			//
-			NavUtils.navigateUpFromSameTask(this);
+		case R.id.action_home:
+			Intent homeIntent = new Intent(this,MainActivity.class);
+			startActivity(homeIntent);
 			return true;
+		case R.id.action_cookbook:
+			Intent cookbookIntent = new Intent(this,CookBookActivity.class);
+			startActivity(cookbookIntent);
+			return true;
+		case R.id.action_analytics:
+			Intent analyticsIntent = new Intent(this,AnalyticsActivity.class);
+			startActivity(analyticsIntent);
+			return true;
+		case R.id.action_shopping_list:
+			Intent shoppinglistIntent = new Intent(this,ShoppingListActivity.class);
+			startActivity(shoppinglistIntent);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
 		}
-		return super.onOptionsItemSelected(item);
 	}
+	
 
 	public void searchWithIntentExtras() throws UnsupportedEncodingException{
 

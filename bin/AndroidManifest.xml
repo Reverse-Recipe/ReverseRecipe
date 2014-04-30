@@ -57,6 +57,30 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="reverse.recipe.reverserecipe.MainActivity" />
         </activity>
+        <activity
+            android:name="reverse.recipe.reverserecipe.CookBookActivity"
+            android:label="@string/cookbook"
+            android:parentActivityName="reverse.recipe.reverserecipe.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="reverse.recipe.reverserecipe.MainActivity" />
+        </activity>
+        <activity
+            android:name="reverse.recipe.reverserecipe.AnalyticsActivity"
+            android:label="@string/analytics"
+            android:parentActivityName="reverse.recipe.reverserecipe.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="reverse.recipe.reverserecipe.MainActivity" />
+        </activity>
+        <activity
+            android:name="reverse.recipe.reverserecipe.ShoppingListActivity"
+            android:label="@string/shoppinglist"
+            android:parentActivityName="reverse.recipe.reverserecipe.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="reverse.recipe.reverserecipe.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

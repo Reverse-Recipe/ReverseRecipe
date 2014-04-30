@@ -1263,14 +1263,17 @@ containing a value of this type.
         public static final int abc_search_dropdown_item_icons_2line=0x7f030015;
         public static final int abc_search_view=0x7f030016;
         public static final int abc_simple_decor=0x7f030017;
-        public static final int activity_display_recipe=0x7f030018;
-        public static final int activity_home=0x7f030019;
-        public static final int activity_ingredient_search=0x7f03001a;
-        public static final int activity_main_t=0x7f03001b;
-        public static final int activity_my_pantry=0x7f03001c;
-        public static final int activity_search=0x7f03001d;
-        public static final int recipelayoutbuilder=0x7f03001e;
-        public static final int support_simple_spinner_dropdown_item=0x7f03001f;
+        public static final int activity_analytics=0x7f030018;
+        public static final int activity_cookbook=0x7f030019;
+        public static final int activity_display_recipe=0x7f03001a;
+        public static final int activity_home=0x7f03001b;
+        public static final int activity_ingredient_search=0x7f03001c;
+        public static final int activity_main_t=0x7f03001d;
+        public static final int activity_my_pantry=0x7f03001e;
+        public static final int activity_search=0x7f03001f;
+        public static final int activity_shopping_list=0x7f030020;
+        public static final int recipelayoutbuilder=0x7f030021;
+        public static final int support_simple_spinner_dropdown_item=0x7f030022;
     }
     public static final class menu {
         public static final int display_recipe=0x7f0c0000;

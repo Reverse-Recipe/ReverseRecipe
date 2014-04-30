@@ -4,10 +4,12 @@ import tabsswipe.adapter.TabsPagerAdapter;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
+import android.view.MenuItem;
 
 public class MainActivity extends FragmentActivity implements
 ActionBar.TabListener {
@@ -64,6 +66,32 @@ ActionBar.TabListener {
 		// TODO Auto-generated method stub
 		getMenuInflater().inflate(R.menu.main_menu_actions, menu);
 		return super.onCreateOptionsMenu(menu);
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		// Take appropriate action for each action item click
+		switch (item.getItemId()) {
+		case R.id.action_home:
+			Intent homeIntent = new Intent(this,MainActivity.class);
+			startActivity(homeIntent);
+			return true;
+		case R.id.action_cookbook:
+			Intent cookbookIntent = new Intent(this,CookBookActivity.class);
+			startActivity(cookbookIntent);
+			return true;
+		case R.id.action_analytics:
+			Intent analyticsIntent = new Intent(this,AnalyticsActivity.class);
+			startActivity(analyticsIntent);
+			return true;
+		case R.id.action_shopping_list:
+			Intent shoppinglistIntent = new Intent(this,ShoppingListActivity.class);
+			startActivity(shoppinglistIntent);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
 
 	@Override
