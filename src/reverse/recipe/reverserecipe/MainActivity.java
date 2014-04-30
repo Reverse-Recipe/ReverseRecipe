@@ -7,6 +7,7 @@ import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.view.Menu;
 
 public class MainActivity extends FragmentActivity implements
 ActionBar.TabListener {
@@ -56,6 +57,13 @@ ActionBar.TabListener {
 			public void onPageScrollStateChanged(int arg0) {
 			}
 		});
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// TODO Auto-generated method stub
+		getMenuInflater().inflate(R.menu.main_menu_actions, menu);
+		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override

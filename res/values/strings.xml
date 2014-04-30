@@ -20,5 +20,10 @@
     <string name="clear">Clear</string>
     <string name="add_ingredient_hint">Add an Ingredient</string>
     <string name="main_test">Main Test</string>
+    <string name="cookbook">Cook Book</string>
+    <string name="analytics">Analytics</string>
+    <string name="blankstring"></string>
+    <string name="home">Home</string>
+    <string name="shoppinglist">Shopping List</string>
     
 </resources>
