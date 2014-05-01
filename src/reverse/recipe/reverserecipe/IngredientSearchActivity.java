@@ -2,12 +2,21 @@ package reverse.recipe.reverserecipe;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
+import org.json.JSONException;
+
 import reverse.recipe.reverserecipe.R;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,10 +32,18 @@ public class IngredientSearchActivity extends Fragment implements AsyncResponse 
 	EditText editText;
 	Button searchButton;
 	Button deleteButton;
+	Button fromPantryButton;
 	ArrayList<String> ingredientList;
 	ListView listView;
-	ArrayAdapter<String> adapter;
 	String[] allIngredients;
+	ListView selectedListView;
+	ArrayAdapter<String> selectedAdapter;
+	ArrayList<String> selectedFromPantry;
+	List<Integer> selectedIndexesFromPantry;
+	
+	SharedPreferences prefs;
+	String savedPantry;
+	ArrayList<String> pantryList;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -42,20 +59,31 @@ public class IngredientSearchActivity extends Fragment implements AsyncResponse 
 		// TODO Auto-generated method stub
 		super.onViewCreated(view, savedInstanceState);
 
-
 		new GetAllIngredients(this).execute(); //populates auto complete
+		
+		prefs = getActivity().getSharedPreferences("reverseRecipe", Context.MODE_PRIVATE);
+		savedPantry = prefs.getString("reverseRecipe.savedPantry","Didnt work");
+		pantryList = new ArrayList<String>();
+		
+		try {
+			pantryList = Utilities.jsonStringToArray(savedPantry);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 
 		//declares xml elements
+	    fromPantryButton = (Button)getView().findViewById(R.id.fromPantryButton);
 		addButton = (Button)getView().findViewById(R.id.addIngredientButton);
 		editText = (EditText)getView().findViewById(R.id.ingredientsSearch);
-		listView = (ListView)getView().findViewById(R.id.ingredientList);
+		selectedListView = (ListView)getView().findViewById(R.id.ingredientList);
 		searchButton = (Button)getView().findViewById(R.id.searchButton);
 		deleteButton = (Button)getView().findViewById(R.id.clearButton);
 
 		ingredientList = new ArrayList<String>();
-		adapter = new ArrayAdapter<String>(getView().getContext(), android.R.layout.simple_expandable_list_item_1, ingredientList);
-
-		listView.setAdapter(adapter);
+		
+		selectedAdapter = new ArrayAdapter<String>(getView().getContext(), R.layout.listview_small, ingredientList);  
+	    selectedListView.setAdapter(selectedAdapter);
+	    
 		addButton.setOnClickListener(new View.OnClickListener(){
 
 			@Override
@@ -65,8 +93,8 @@ public class IngredientSearchActivity extends Fragment implements AsyncResponse 
 
 				//adds ingredients to list if they exist in database and are not already on list
 				if (Arrays.asList(allIngredients).contains(input) && !(ingredientList.contains(input))) {
-					adapter.add(input);
-			        adapter.notifyDataSetChanged();
+					selectedAdapter.add(input);
+					selectedAdapter.notifyDataSetChanged();
 					editText.setText("");
 				}				
 			}   	
@@ -86,10 +114,18 @@ public class IngredientSearchActivity extends Fragment implements AsyncResponse 
 	    	//delete selected items from list and updates pantry list saved on phone
 	    	@Override
 			public void onClick(View arg0) {
-                adapter.clear();
-		        adapter.notifyDataSetChanged();
+	    		selectedAdapter.clear();
+	    		selectedAdapter.notifyDataSetChanged();
 			}    	
 	    });
+	    
+    	fromPantryButton.setOnClickListener(new Button.OnClickListener(){
+    		
+    		@Override
+    	   public void onClick(View arg0) {    			
+    			showPantryDialog();
+	   }});             
+	    	            
 	}
 
 	//goes to search activity and starts a search with selected pantry ingredients
@@ -107,7 +143,6 @@ public class IngredientSearchActivity extends Fragment implements AsyncResponse 
 
 	@Override
 	public void responseObtained(String output) {
-		// TODO Auto-generated method stub
 
 		try {
 			AutoCompleteTextView autoComplete;
@@ -124,5 +159,58 @@ public class IngredientSearchActivity extends Fragment implements AsyncResponse 
 		} catch (Exception e) {
 
 		}
+	}
+	
+	private void showPantryDialog(){
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		final List<Integer> mSelectedItems = new ArrayList<Integer>();
+		CharSequence[] pantrySequence = pantryList.toArray(new CharSequence[pantryList.size()]);
+		boolean[] checkedItems = new boolean[pantryList.size()];
+		
+		for (int i = 0; i < checkedItems.length; i++){
+			
+			for (int j = 0; j < selectedAdapter.getCount(); j++){
+				if (selectedAdapter.getItem(j) == pantryList.get(i)){
+					checkedItems[i] = true;
+				}
+			}
+			
+		}
+
+		builder.setTitle(R.string.my_pantry)
+				.setMultiChoiceItems(pantrySequence, checkedItems,
+						new DialogInterface.OnMultiChoiceClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int ingredient, boolean isChecked) {
+								if (isChecked) {
+									mSelectedItems.add(ingredient);
+								} else if (mSelectedItems.contains(ingredient)) {
+									mSelectedItems.remove(Integer
+											.valueOf(ingredient));
+								}
+							}
+						})
+				.setPositiveButton(R.string.add_ingredient,
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								
+								for (int i = 0; i < mSelectedItems.size(); i++){								
+									String ingredient = pantryList.get(mSelectedItems.get(i));
+									
+									if (!(ingredientList.contains(ingredient))) {
+										selectedAdapter.add(ingredient);
+										selectedAdapter.notifyDataSetChanged();
+									}
+								}
+							}
+						})
+				.setNegativeButton(R.string.cancel,
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								
+							}
+						});
+		builder.create().show();
 	}
 }
