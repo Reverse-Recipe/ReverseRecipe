@@ -108,8 +108,16 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 		final ArrayList<Recipe> arrayOfRecipes = new ArrayList<Recipe>();
 		String recipeSearchStr;
 
-		searchIngredients = bundle.getStringArrayList("searchTerms");
-		adapter = new recipeArrayAdapter(this, arrayOfRecipes);
+		searchIngredients = bundle.getStringArrayList("searchTerms"); //here
+		
+		DbHelper db = new DbHelper(this);
+		
+		for (int i = 0; i < searchIngredients.size(); i++){
+			db.addIngredient(searchIngredients.get(i));
+			db.addToIngredientCount(searchIngredients.get(i));
+		}
+		
+		adapter = new recipeArrayAdapter(this, arrayOfRecipes); //to here
 		setListAdapter(adapter);
 		defaultImage = BitmapFactory.decodeResource(getResources(), R.drawable.food_network_logo);
 

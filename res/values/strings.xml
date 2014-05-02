@@ -16,6 +16,8 @@
     <string name="title_activity_my_pantry">My Pantry</string>
     <string name="my_pantry">My Pantry</string>
     <string name="from_pantry">+</string>
+    <string name="most_used">Most Used</string>
+    <string name="from_most_used">-</string>
     <string name="preference_file_key">Saved Pantry</string>
     <string name="delete">Delete</string>
     <string name="clear">Clear</string>

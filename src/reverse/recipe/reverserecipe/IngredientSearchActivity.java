@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Locale;
 
 import org.json.JSONException;
-
 import reverse.recipe.reverserecipe.R;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -14,9 +13,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,14 +30,15 @@ public class IngredientSearchActivity extends Fragment implements AsyncResponse 
 	Button searchButton;
 	Button deleteButton;
 	Button fromPantryButton;
+	Button fromMostUsedButton;
 	ArrayList<String> ingredientList;
+	ArrayList<String> mostUsedIngredients;
 	ListView listView;
 	String[] allIngredients;
 	ListView selectedListView;
 	ArrayAdapter<String> selectedAdapter;
 	ArrayList<String> selectedFromPantry;
 	List<Integer> selectedIndexesFromPantry;
-	
 	SharedPreferences prefs;
 	String savedPantry;
 	ArrayList<String> pantryList;
@@ -73,6 +71,7 @@ public class IngredientSearchActivity extends Fragment implements AsyncResponse 
 
 		//declares xml elements
 	    fromPantryButton = (Button)getView().findViewById(R.id.fromPantryButton);
+	    fromMostUsedButton = (Button)getView().findViewById(R.id.fromMostUsedButton);
 		addButton = (Button)getView().findViewById(R.id.addIngredientButton);
 		editText = (EditText)getView().findViewById(R.id.ingredientsSearch);
 		selectedListView = (ListView)getView().findViewById(R.id.ingredientList);
@@ -122,9 +121,18 @@ public class IngredientSearchActivity extends Fragment implements AsyncResponse 
     	fromPantryButton.setOnClickListener(new Button.OnClickListener(){
     		
     		@Override
-    	   public void onClick(View arg0) {    			
-    			showPantryDialog();
-	   }});             
+    	   public void onClick(View arg0) { 
+    			showSearchDialog(pantryList, R.string.my_pantry);
+	   }});  
+    	
+    	fromMostUsedButton.setOnClickListener(new Button.OnClickListener(){
+    		
+    		@Override
+    	   public void onClick(View arg0) {
+    			DbHelper db = new DbHelper(getView().getContext());
+    			mostUsedIngredients = db.getTop25Ingredients();
+    			showSearchDialog(mostUsedIngredients, R.string.most_used);
+	   }});
 	    	            
 	}
 
@@ -161,56 +169,58 @@ public class IngredientSearchActivity extends Fragment implements AsyncResponse 
 		}
 	}
 	
-	private void showPantryDialog(){
+	private void showSearchDialog(final ArrayList<String> list, int title){
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		final List<Integer> mSelectedItems = new ArrayList<Integer>();
-		CharSequence[] pantrySequence = pantryList.toArray(new CharSequence[pantryList.size()]);
-		boolean[] checkedItems = new boolean[pantryList.size()];
+		CharSequence[] ingredientSequence = list.toArray(new CharSequence[list.size()]);
+		boolean[] checkedItems = new boolean[list.size()];
 		
+		//check items that are already present in selected list
 		for (int i = 0; i < checkedItems.length; i++){
 			
 			for (int j = 0; j < selectedAdapter.getCount(); j++){
-				if (selectedAdapter.getItem(j) == pantryList.get(i)){
+				if (selectedAdapter.getItem(j).equals(list.get(i))){
 					checkedItems[i] = true;
 				}
 			}
 			
 		}
-
-		builder.setTitle(R.string.my_pantry)
-				.setMultiChoiceItems(pantrySequence, checkedItems,
-						new DialogInterface.OnMultiChoiceClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int ingredient, boolean isChecked) {
-								if (isChecked) {
-									mSelectedItems.add(ingredient);
-								} else if (mSelectedItems.contains(ingredient)) {
-									mSelectedItems.remove(Integer
-											.valueOf(ingredient));
+		
+		builder.setTitle(title)
+			.setMultiChoiceItems(ingredientSequence, checkedItems,
+					new DialogInterface.OnMultiChoiceClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int ingredient, boolean isChecked) {
+							if (isChecked) {
+								mSelectedItems.add(ingredient);
+							} else if (mSelectedItems.contains(ingredient)) {
+								mSelectedItems.remove(Integer
+										.valueOf(ingredient));
+							}
+						}
+					})
+			.setPositiveButton(R.string.add_ingredient,
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							
+							for (int i = 0; i < mSelectedItems.size(); i++){								
+								String ingredient = list.get(mSelectedItems.get(i));
+								
+								if (!(ingredientList.contains(ingredient))) {
+									selectedAdapter.add(ingredient);
+									selectedAdapter.notifyDataSetChanged();
 								}
 							}
-						})
-				.setPositiveButton(R.string.add_ingredient,
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int id) {
-								
-								for (int i = 0; i < mSelectedItems.size(); i++){								
-									String ingredient = pantryList.get(mSelectedItems.get(i));
-									
-									if (!(ingredientList.contains(ingredient))) {
-										selectedAdapter.add(ingredient);
-										selectedAdapter.notifyDataSetChanged();
-									}
-								}
-							}
-						})
-				.setNegativeButton(R.string.cancel,
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int id) {
-								
-							}
-						});
+						}
+					})
+			.setNegativeButton(R.string.cancel,
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							
+						}
+					});
+		
 		builder.create().show();
 	}
 }
