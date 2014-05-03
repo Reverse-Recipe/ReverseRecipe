@@ -34,7 +34,7 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 
 	recipeArrayAdapter adapter;
 	ArrayList<String> searchIngredients;
-	boolean[] hasImage = new boolean[30]; //Stores which recipes have an image (to load later)
+	boolean[] hasImage; //Stores which recipes have an image (to load later)
 	Bitmap defaultImage;
 	ProgressDialog loadingDialog;
 
@@ -177,7 +177,8 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 			JSONObject resultObject2 = resultObject.getJSONObject("recipes"); //Refines Object To Recipes
 
 			int NumRecipes = resultObject.getInt("number of recipes"); // Grabs number of recipes
-
+			hasImage = new boolean[NumRecipes];
+					
 			//loop through recipes
 			for (int p=1; p<=NumRecipes; p++) {
 
@@ -210,7 +211,7 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 			loadingDialog.dismiss();
 
 			//Download Recipe Image's
-			for (int p=0; p<30; p++) {
+			for (int p=0; p<NumRecipes; p++) {
 				if (hasImage[p]) {
 					new DownloadImageTask(p).execute(adapter.getItem(p).imageURL);
 				}
