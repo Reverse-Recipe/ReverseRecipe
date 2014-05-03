@@ -17,7 +17,8 @@ public class recipeArrayAdapter  extends ArrayAdapter<Recipe>  {
 	private static class ViewHolder {
 		TextView title;
 		TextView author;
-		TextView extras;
+		TextView difficulty;
+		TextView time;
 		ImageView image;
 	}
 
@@ -38,7 +39,8 @@ public class recipeArrayAdapter  extends ArrayAdapter<Recipe>  {
 			convertView = inflater.inflate(R.layout.recipelayoutbuilder, null);
 			viewHolder.title = (TextView) convertView.findViewById(R.id.titleLabel);
 			viewHolder.author = (TextView) convertView.findViewById(R.id.authorLabel);
-			viewHolder.extras = (TextView) convertView.findViewById(R.id.extrasLabel);
+			viewHolder.difficulty = (TextView) convertView.findViewById(R.id.difficultyLabel);
+			viewHolder.time = (TextView) convertView.findViewById(R.id.timeLabel);
 			viewHolder.image = (ImageView) convertView.findViewById(R.id.icon);
 			convertView.setTag(viewHolder);
 		} else {
@@ -49,7 +51,8 @@ public class recipeArrayAdapter  extends ArrayAdapter<Recipe>  {
 		// Populate the data into the template view using the data object
 		viewHolder.title.setText(recipe.Title);
 		viewHolder.author.setText("Author: " + recipe.Author);
-		viewHolder.extras.setText("ID: " + recipe.ID + "         Relevance: " + recipe.Relevance);
+		viewHolder.difficulty.setText("Difficulty: " + recipe.Difficulty);
+		viewHolder.time.setText("Time: " + recipe.Time + " Minutes");
 
 		if (recipe.Image != null) {
 			viewHolder.image.setImageBitmap(recipe.Image);

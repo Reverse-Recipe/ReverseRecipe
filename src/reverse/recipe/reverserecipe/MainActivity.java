@@ -23,7 +23,7 @@ ActionBar.TabListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main_t);
+		setContentView(R.layout.activity_main);
 
 		// Initilization
 		viewPager = (ViewPager) findViewById(R.id.pager);

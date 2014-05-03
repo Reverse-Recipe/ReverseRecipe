@@ -153,15 +153,27 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 		double Relevance;
 		Bitmap Image;
 		String imageURL;
+		int Time;
+		String Difficulty;
 
-		public Recipe(String titleT, int idT, String authorT, double relevanceT, String imageURLT, Bitmap imageT) {
+		public Recipe(String titleT, int idT, String authorT, double relevanceT, String imageURLT, Bitmap imageT, String difficultyT, int timeT) {
 			this.Title = titleT;
 			this.ID = idT;
+			if ("NULL".equals(authorT)) {
+				authorT = "Not Available";
+			}
 			this.Author = authorT;
 
 			DecimalFormat dec = new DecimalFormat("0.00");
 			this.Relevance = Double.parseDouble(dec.format(relevanceT)); //Round to 2 decimals
 
+			if ("NULL".equals(difficultyT)) {
+				difficultyT = "Not Available";
+			}
+			this.Difficulty = difficultyT;
+			
+			this.Time = timeT;
+			
 			this.imageURL = imageURLT;
 			this.Image = imageT;
 		}
@@ -190,8 +202,10 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 					int idTemp = recipeObject.getInt("recipe id");
 					String authorTemp = recipeObject.getString("author");
 					double relevanceTemp = recipeObject.getDouble("relevance");
+					String difficultyTemp = recipeObject.getString("difficulty");
 					String imageURLTemp = recipeObject.getString("image").replace("\\/", "/");
-
+					int timeTemp = recipeObject.getInt("cookTime") + recipeObject.getInt("prepTime");
+					
 					//Mark Recipe's That Need Their Image Downloaded
 					if (!"NULL".equals(imageURLTemp)) {
 						hasImage[p-1] = true;
@@ -200,7 +214,7 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 					}
 
 					//Display Recipe In List
-					Recipe newRecipe = new Recipe(titleTemp, idTemp, authorTemp, relevanceTemp, imageURLTemp, defaultImage);
+					Recipe newRecipe = new Recipe(titleTemp, idTemp, authorTemp, relevanceTemp, imageURLTemp, defaultImage, difficultyTemp, timeTemp);
 					adapter.add(newRecipe);
 				}
 				catch(JSONException jse){

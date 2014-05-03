@@ -17,7 +17,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 
 public class DisplayRecipeActivity extends Activity implements AsyncResponse {
@@ -72,14 +71,6 @@ public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 		default:
 			return super.onOptionsItemSelected(item);
 		}
-	}
-	
-	
-	public void displayRecipe(View view) {
-		
-		String recipeId = "16583"; //random id for now
-		
-		new GetSingleRecipe(this).execute(recipeId); //get recipe data
 	}
 	
 	public void displayRecipeWithIntentExtras() {

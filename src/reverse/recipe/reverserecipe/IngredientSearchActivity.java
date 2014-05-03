@@ -91,7 +91,7 @@ public class IngredientSearchActivity extends Fragment implements AsyncResponse 
 				String input = editText.getText().toString().toLowerCase(Locale.ENGLISH);
 
 				//adds ingredients to list if they exist in database and are not already on list
-				if (Arrays.asList(allIngredients).contains(input) && !(ingredientList.contains(input))) {
+				if (!"".equals(input) && Arrays.asList(allIngredients).contains(input) && !(ingredientList.contains(input))) {
 					selectedAdapter.add(input);
 					selectedAdapter.notifyDataSetChanged();
 					editText.setText("");
@@ -104,7 +104,9 @@ public class IngredientSearchActivity extends Fragment implements AsyncResponse 
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				GoToSearchRecipes();
+				if(selectedAdapter.getCount() > 0) {
+					GoToSearchRecipes();
+				}
 			}
 		});
 		
