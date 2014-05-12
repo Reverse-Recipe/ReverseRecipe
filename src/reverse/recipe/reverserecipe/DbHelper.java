@@ -91,7 +91,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	}
 	
 	//returns number of times ingredient has been searched
-	private int getIngredientCount(String ingredient){
+	public int getIngredientCount(String ingredient){
 		
 		String countQuery = "SELECT " + KEY_COUNT + " FROM " + TABLE_INGREDIENTS + " WHERE " + KEY_INGREDIENT + " = \"" + ingredient + "\"";
 		SQLiteDatabase db = this.getReadableDatabase();
