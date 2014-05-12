@@ -103,7 +103,7 @@ public class Utilities {
 		String searchTerm = "";
 		
 		for (int i = 0; i < ingredients.size(); i++){
-			searchTerm += URLEncoder.encode("\"" + ingredients.get(i) + "\"*", "UTF-8");
+			searchTerm += URLEncoder.encode("\"" + ingredients.get(i) + "\" ", "UTF-8");
 		}
 		
 		return searchTerm;

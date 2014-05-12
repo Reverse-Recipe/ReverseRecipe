@@ -138,8 +138,9 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 			}});
 
 
-		recipeSearchStr = "http://www.reverserecipe.host22.com/api/?tag=searchRecipes&ingreds="; 
+		recipeSearchStr = "http://www.reverserecipe.host22.com/api/?tag=searchRecipes&include="; 
 		recipeSearchStr += Utilities.arrayToSearchString(searchIngredients);
+		recipeSearchStr += "&exclude="; //not used for now
 
 		new GetRecipeSearchResults(this).execute(recipeSearchStr);
 	}
