@@ -81,6 +81,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="reverse.recipe.reverserecipe.MainActivity" />
         </activity>
+        <activity android:name="org.achartengine.GraphicalActivity"/>
     </application>
 
 </manifest>

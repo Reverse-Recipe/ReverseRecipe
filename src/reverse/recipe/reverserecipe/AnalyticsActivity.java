@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 public class AnalyticsActivity extends Activity {
 
@@ -16,6 +17,12 @@ public class AnalyticsActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_analytics);
 		setupActionBar();
+	}
+	
+	public void ingredientsGraphHandler (View v) {
+		IngredientGraph graph = new IngredientGraph();
+		Intent graphIntent = graph.getIntent(this);
+		startActivity(graphIntent);
 	}
 
 	/**
