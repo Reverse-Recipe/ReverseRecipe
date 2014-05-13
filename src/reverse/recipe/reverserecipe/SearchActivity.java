@@ -4,6 +4,8 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -32,6 +34,8 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -50,6 +54,7 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 	Bitmap defaultImage;
 	ProgressDialog loadingDialog;
 	Button filterButton;
+	Button sortButton;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -65,13 +70,21 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 					searchWithIntentExtras();
 					
 					filterButton = (Button)findViewById(R.id.filterButton);
+					sortButton = (Button)findViewById(R.id.sortButton);
 					
 					filterButton.setOnClickListener(new Button.OnClickListener(){
 			    		
 			    		@Override
 			    	   public void onClick(View arg0) {
 			    			showFilterDialog();
-				   }}); 
+				   }});
+					
+					sortButton.setOnClickListener(new Button.OnClickListener(){
+			    		
+			    		@Override
+			    	   public void onClick(View arg0) {
+			    			showSortDialog();
+				   }});
 				}
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
@@ -321,6 +334,130 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 			adapter.getItem(ItemNum).Image = result;
 			adapter.notifyDataSetChanged();
 		}
+	}
+	
+@TargetApi(Build.VERSION_CODES.KITKAT)
+private void showSortDialog(){
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		LayoutInflater inflater = this.getLayoutInflater();
+		final View view = inflater.inflate(R.layout.dialog_search_sort, null);
+		
+		final Spinner sortByDropdown = (Spinner)view.findViewById(R.id.sortByDropDown);
+		final RadioGroup radioButtons = (RadioGroup)view.findViewById(R.id.radioGroupAscDesc);
+		
+		radioButtons.check(R.id.asc);
+		
+		String[] difficultyValues = new String[]{"Relevance", "Rating", "Difficulty", "Cook Time"};
+		ArrayAdapter<String> difficultyAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, difficultyValues);
+		sortByDropdown.setAdapter(difficultyAdapter);
+		
+		builder.setView(view)	
+			.setTitle("Sort Results")
+			.setPositiveButton(R.string.sort_results,
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							
+							int selectedRadio = radioButtons.getCheckedRadioButtonId();
+							RadioButton radioButton = (RadioButton)view.findViewById(selectedRadio);
+							
+							String sortBy = (String) sortByDropdown.getSelectedItem();
+							
+							if (radioButton.getText().equals("Ascending")){
+								
+								if (sortBy.equals("Relevance")){
+									Collections.sort(arrayOfRecipes, new Comparator<Recipe>() {
+										
+										@Override
+										public int compare(Recipe recipe1, Recipe recipe2) {
+											return Double.compare(recipe1.Relevance, recipe2.Relevance);
+										}
+								    });
+								}
+								
+								if (sortBy.equals("Rating")){
+									Collections.sort(arrayOfRecipes, new Comparator<Recipe>() {
+	
+										@Override
+										public int compare(Recipe recipe1, Recipe recipe2) {
+											return Integer.compare(recipe1.Rating, recipe2.Rating);
+										}
+								    });
+								}
+								
+								if (sortBy.equals("Difficulty")){
+									Collections.sort(arrayOfRecipes, new Comparator<Recipe>() {
+	
+										@Override
+										public int compare(Recipe recipe1, Recipe recipe2) {
+											return Integer.compare(getNumericalDifficulty(recipe1.Difficulty), getNumericalDifficulty(recipe2.Difficulty));
+										}
+								    });
+								}
+								
+								if (sortBy.equals("Cook Time")){
+									Collections.sort(arrayOfRecipes, new Comparator<Recipe>() {
+	
+										@Override
+										public int compare(Recipe recipe1, Recipe recipe2) {
+											return Integer.compare(recipe1.Time, recipe2.Time);
+										}
+								    });
+								}
+							} else if (radioButton.getText().equals("Descending")){
+								
+								if (sortBy.equals("Relevance")){
+									Collections.sort(arrayOfRecipes, new Comparator<Recipe>() {
+										
+										@Override
+										public int compare(Recipe recipe1, Recipe recipe2) {
+											return Double.compare(recipe2.Relevance, recipe1.Relevance);
+										}
+								    });
+								}
+								
+								if (sortBy.equals("Rating")){
+									Collections.sort(arrayOfRecipes, new Comparator<Recipe>() {
+	
+										@Override
+										public int compare(Recipe recipe1, Recipe recipe2) {
+											return Integer.compare(recipe2.Rating, recipe1.Rating);
+										}
+								    });
+								}
+								
+								if (sortBy.equals("Difficulty")){
+									Collections.sort(arrayOfRecipes, new Comparator<Recipe>() {
+	
+										@Override
+										public int compare(Recipe recipe1, Recipe recipe2) {
+											return Integer.compare(getNumericalDifficulty(recipe2.Difficulty), getNumericalDifficulty(recipe1.Difficulty));
+										}
+								    });
+								}
+								
+								if (sortBy.equals("Cook Time")){
+									Collections.sort(arrayOfRecipes, new Comparator<Recipe>() {
+	
+										@Override
+										public int compare(Recipe recipe1, Recipe recipe2) {
+											return Integer.compare(recipe2.Time, recipe1.Time);
+										}
+								    });
+								}
+							}
+							
+							adapter.notifyDataSetChanged();
+						}
+					})
+			.setNegativeButton(R.string.cancel,
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							
+						}
+					});
+		
+		builder.create().show();
 	}
 	
 	private void showFilterDialog(){

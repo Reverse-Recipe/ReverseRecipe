@@ -18,7 +18,10 @@
     <string name="difficulty">Difficulty</string>
     <string name="rating">Rating</string>
     <string name="cooktime">Cook Time</string>
-    <string name="filter_results">Filter Results</string>
+    <string name="filter_results">Filter</string>
+    <string name="asc">Ascending</string>
+    <string name="desc">Descending</string>
+    <string name="sort_results">Sort</string>
     <string name="from_pantry">+</string>
     <string name="most_used">Most Used</string>
     <string name="from_most_used">-</string>
