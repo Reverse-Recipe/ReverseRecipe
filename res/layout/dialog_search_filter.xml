@@ -1,0 +1,159 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:orientation="vertical" >
+
+   <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+    
+       <LinearLayout
+           	android:id="@+id/difficultyLabel"
+		    android:layout_width="match_parent"
+		    android:layout_height="40dp"
+		    android:orientation="horizontal" >
+    
+		    <CheckBox
+		        android:id="@+id/checkBoxDifficulty"
+		        android:layout_width="0dp"
+		        android:layout_weight="1"
+		        android:layout_height="match_parent"
+		        android:text="@string/difficulty" />
+		    
+	    </LinearLayout>
+	    
+       <LinearLayout
+           android:id="@+id/difficultyFilters"
+		    android:layout_width="match_parent"
+		    android:layout_height="40dp"
+		    android:orientation="horizontal"
+		    android:visibility="gone" >
+	    
+		    <Spinner
+			    android:id="@+id/difficultyFilterDropDown"
+			    android:layout_width="0dp"
+			    android:layout_weight="1"
+			    android:layout_height="match_parent"
+			    android:layout_marginLeft="2dp"
+			    android:layout_marginRight="2dp"
+			    android:background="@android:drawable/btn_dropdown"
+			    android:spinnerMode="dropdown" />
+		    
+		    <Spinner
+			    android:id="@+id/difficultyValuesDropDown"
+			    android:layout_width="0dp"
+			    android:layout_weight="1"
+			    android:layout_height="match_parent"
+			    android:layout_marginLeft="2dp"
+			    android:layout_marginRight="2dp"
+			    android:background="@android:drawable/btn_dropdown"
+			    android:spinnerMode="dropdown" />
+	
+    	</LinearLayout>
+    </LinearLayout>
+    
+   <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+       
+       <LinearLayout
+		    android:layout_width="match_parent"
+		    android:layout_height="40dp"
+		    android:orientation="horizontal" >
+    
+		    <CheckBox
+		        android:id="@+id/checkBoxCookTime"
+		        android:layout_width="0dp"
+		        android:layout_weight="3"
+		        android:layout_height="match_parent"
+		        android:text="@string/cooktime" />
+	   </LinearLayout>
+	    
+       <LinearLayout
+           android:id="@+id/cookTimeFilters"
+		    android:layout_width="match_parent"
+		    android:layout_height="40dp"
+		    android:orientation="horizontal"
+		    android:visibility="gone" >
+	    
+		    <Spinner
+			    android:id="@+id/cooktimeFilterDropDown"
+			    android:layout_width="0dp"
+			    android:layout_weight="1"
+			    android:layout_height="match_parent"
+			    android:layout_marginLeft="2dp"
+			    android:layout_marginRight="2dp"
+			    android:background="@android:drawable/btn_dropdown"
+			    android:spinnerMode="dropdown" />
+		    
+		    <EditText
+			    android:id="@+id/cooktimeFilterValue"
+			    android:inputType="number"
+			    android:layout_width="0dp"
+			    android:layout_weight="1"
+			    android:layout_height="match_parent"
+			    android:layout_marginLeft="2dp"
+			    android:layout_marginRight="2dp" />
+	   
+	   </LinearLayout>
+	   
+   	</LinearLayout>
+   
+   	<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+    	
+    	<LinearLayout
+       	android:id="@+id/ratingLabel"
+	    android:layout_width="match_parent"
+	    android:layout_height="40dp"
+	    android:orientation="horizontal" >
+    
+		    <CheckBox
+		        android:id="@+id/checkBoxRating"
+		        android:layout_width="0dp"
+		        android:layout_weight="1"
+		        android:layout_height="match_parent"
+		        android:text="@string/rating" />
+		    
+    	</LinearLayout>
+	    
+       	<LinearLayout
+           	android:id="@+id/ratingFilters"
+		    android:layout_width="match_parent"
+		    android:layout_height="40dp"
+		    android:orientation="horizontal"
+		    android:visibility="gone" >
+	    
+		    <Spinner
+			    android:id="@+id/ratingFilterDropDown"
+			    android:layout_width="0dp"
+			    android:layout_weight="1"
+			    android:layout_height="match_parent"
+			    android:layout_marginLeft="2dp"
+			    android:layout_marginRight="2dp"
+			    android:background="@android:drawable/btn_dropdown"
+			    android:spinnerMode="dropdown" />
+		    
+		    <Spinner
+			    android:id="@+id/ratingValuesDropDown"
+			    android:layout_width="0dp"
+			    android:layout_weight="1"
+			    android:layout_height="match_parent"
+			    android:layout_marginLeft="2dp"
+			    android:layout_marginRight="2dp"
+			    android:background="@android:drawable/btn_dropdown"
+			    android:spinnerMode="dropdown" />
+	
+    	</LinearLayout>
+   
+   </LinearLayout>
+
+</LinearLayout>

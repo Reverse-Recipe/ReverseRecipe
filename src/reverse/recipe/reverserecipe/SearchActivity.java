@@ -4,6 +4,8 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,12 +18,21 @@ import android.os.Bundle;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -34,9 +45,11 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 
 	recipeArrayAdapter adapter;
 	ArrayList<String> searchIngredients;
+	ArrayList<Recipe> arrayOfRecipes;
 	boolean[] hasImage; //Stores which recipes have an image (to load later)
 	Bitmap defaultImage;
 	ProgressDialog loadingDialog;
+	Button filterButton;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +63,15 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 			try {
 				if (isOnline()) {
 					searchWithIntentExtras();
+					
+					filterButton = (Button)findViewById(R.id.filterButton);
+					
+					filterButton.setOnClickListener(new Button.OnClickListener(){
+			    		
+			    		@Override
+			    	   public void onClick(View arg0) {
+			    			showFilterDialog();
+				   }}); 
 				}
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
@@ -105,10 +127,10 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 		loadingDialog.show();
 
 		Bundle bundle = getIntent().getExtras();
-		final ArrayList<Recipe> arrayOfRecipes = new ArrayList<Recipe>();
+		arrayOfRecipes = new ArrayList<Recipe>();
 		String recipeSearchStr;
 
-		searchIngredients = bundle.getStringArrayList("searchTerms"); //here
+		searchIngredients = bundle.getStringArrayList("searchTerms");
 		
 		DbHelper db = new DbHelper(this);
 		
@@ -117,7 +139,7 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 			db.addToIngredientCount(searchIngredients.get(i));
 		}
 		
-		adapter = new recipeArrayAdapter(this, arrayOfRecipes); //to here
+		adapter = new recipeArrayAdapter(this, arrayOfRecipes);
 		setListAdapter(adapter);
 		defaultImage = BitmapFactory.decodeResource(getResources(), R.drawable.food_network_logo);
 
@@ -156,8 +178,9 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 		String imageURL;
 		int Time;
 		String Difficulty;
+		int Rating;
 
-		public Recipe(String titleT, int idT, String authorT, double relevanceT, String imageURLT, Bitmap imageT, String difficultyT, int timeT) {
+		public Recipe(String titleT, int idT, String authorT, double relevanceT, String imageURLT, Bitmap imageT, String difficultyT, int timeT, int ratingT) {
 			this.Title = titleT;
 			this.ID = idT;
 			if ("NULL".equals(authorT)) {
@@ -177,6 +200,8 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 			
 			this.imageURL = imageURLT;
 			this.Image = imageT;
+			
+			this.Rating = ratingT;
 		}
 	}
 
@@ -206,6 +231,7 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 					String difficultyTemp = recipeObject.getString("difficulty");
 					String imageURLTemp = recipeObject.getString("image").replace("\\/", "/");
 					int timeTemp = recipeObject.getInt("cookTime") + recipeObject.getInt("prepTime");
+					int ratingTemp = recipeObject.getInt("rating");
 					
 					//Mark Recipe's That Need Their Image Downloaded
 					if (!"NULL".equals(imageURLTemp)) {
@@ -215,7 +241,7 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 					}
 
 					//Display Recipe In List
-					Recipe newRecipe = new Recipe(titleTemp, idTemp, authorTemp, relevanceTemp, imageURLTemp, defaultImage, difficultyTemp, timeTemp);
+					Recipe newRecipe = new Recipe(titleTemp, idTemp, authorTemp, relevanceTemp, imageURLTemp, defaultImage, difficultyTemp, timeTemp, ratingTemp);
 					adapter.add(newRecipe);
 				}
 				catch(JSONException jse){
@@ -295,5 +321,190 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 			adapter.getItem(ItemNum).Image = result;
 			adapter.notifyDataSetChanged();
 		}
+	}
+	
+	private void showFilterDialog(){
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		LayoutInflater inflater = this.getLayoutInflater();
+		View view = inflater.inflate(R.layout.dialog_search_filter, null);
+		
+		final Spinner difficultyDropdown = (Spinner)view.findViewById(R.id.difficultyFilterDropDown);
+		final Spinner difficultyValuesDropdown = (Spinner)view.findViewById(R.id.difficultyValuesDropDown);
+		final Spinner cookTimeDropdown = (Spinner)view.findViewById(R.id.cooktimeFilterDropDown);
+		final EditText cookTimeValue = (EditText)view.findViewById(R.id.cooktimeFilterValue);
+		final Spinner ratingDropdown = (Spinner)view.findViewById(R.id.ratingFilterDropDown);
+		final Spinner ratingValuesDropdown = (Spinner)view.findViewById(R.id.ratingValuesDropDown);
+		
+		final CheckBox difficultyCheckBox = (CheckBox)view.findViewById(R.id.checkBoxDifficulty);
+		final CheckBox cookTimeCheckBox = (CheckBox)view.findViewById(R.id.checkBoxCookTime);
+		final CheckBox ratingCheckBox = (CheckBox)view.findViewById(R.id.checkBoxRating);
+		
+		final LinearLayout difficultyFilters = (LinearLayout)view.findViewById(R.id.difficultyFilters);
+		final LinearLayout cookTimeFilters = (LinearLayout)view.findViewById(R.id.cookTimeFilters);
+		final LinearLayout ratingFilters = (LinearLayout)view.findViewById(R.id.ratingFilters);
+		
+		String[] operators = new String[]{"Greater", "Less"};
+		String[] difficultyValues = new String[]{"Easy", "Intermediate", "Hard"};
+		String[] ratingValues = new String[]{"1", "2", "3", "4", "5"};
+		
+		ArrayAdapter<String> operatorAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, operators);
+		ArrayAdapter<String> difficultyAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, difficultyValues);
+		ArrayAdapter<String> ratingAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, ratingValues);
+		
+		difficultyDropdown.setAdapter(operatorAdapter);
+		difficultyValuesDropdown.setAdapter(difficultyAdapter);
+		ratingDropdown.setAdapter(operatorAdapter);
+		ratingValuesDropdown.setAdapter(ratingAdapter);
+		cookTimeDropdown.setAdapter(operatorAdapter);
+		
+		difficultyCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			   @Override
+			   public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
+				   if (isChecked){
+	    				difficultyFilters.setVisibility(View.VISIBLE);
+	    			} else {
+	    				difficultyFilters.setVisibility(View.GONE);
+	    			}
+			   }
+		});
+		
+		cookTimeCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			   @Override
+			   public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
+				   if (isChecked){
+					   cookTimeFilters.setVisibility(View.VISIBLE);
+	    			} else {
+	    				cookTimeFilters.setVisibility(View.GONE);
+	    			}
+			   }
+		});
+		
+		ratingCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			   @Override
+			   public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
+				   if (isChecked){
+					   ratingFilters.setVisibility(View.VISIBLE);
+	    			} else {
+	    				ratingFilters.setVisibility(View.GONE);
+	    			}
+			   }
+		});
+		
+		builder.setView(view)	
+			.setTitle("Filter Results")
+			.setPositiveButton(R.string.filter,
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							
+							boolean filterDifficulty = difficultyCheckBox.isChecked();
+							boolean filterCookTime = cookTimeCheckBox.isChecked();
+							boolean filterRating = ratingCheckBox.isChecked();
+							
+							if (filterDifficulty){
+								int difficulty = getNumericalDifficulty((String) difficultyValuesDropdown.getSelectedItem());
+								filterResults(difficultyDropdown.getSelectedItem().equals("Greater"), difficulty, "difficulty");
+							}
+							
+							if (filterCookTime){
+								int cookTime = Integer.parseInt(cookTimeValue.getText().toString());
+								filterResults(cookTimeDropdown.getSelectedItem().equals("Greater"), cookTime, "cookTime");
+							}
+							
+							if (filterRating){
+								int rating = Integer.parseInt((String) ratingValuesDropdown.getSelectedItem());
+								filterResults(ratingDropdown.getSelectedItem().equals("Greater"), rating, "rating");
+							}
+							
+							adapter.notifyDataSetChanged();
+						}
+					})
+			.setNegativeButton(R.string.cancel,
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							
+						}
+					});
+		
+		builder.create().show();
+	}
+	
+	private void filterResults(boolean dropDownValue, int filterValue, String recipeComponent){
+		
+		Iterator<Recipe> recipeIterator = arrayOfRecipes.iterator();
+		
+		if (dropDownValue){
+			
+			while (recipeIterator.hasNext()){
+				
+				Recipe recipe = recipeIterator.next();
+				
+				if (recipeComponent.equals("difficulty")){
+				
+					if (getNumericalDifficulty(recipe.Difficulty) < filterValue){
+						
+						recipeIterator.remove();
+					}
+				} else if (recipeComponent.equals("cookTime")){
+					
+					if (recipe.Time < filterValue){
+						
+						recipeIterator.remove();
+					}
+				} else if (recipeComponent.equals("rating")){
+					
+					if (recipe.Rating < filterValue){
+						
+						recipeIterator.remove();
+					}
+				}
+			}
+			
+		
+		} else {
+			
+			while (recipeIterator.hasNext()){
+				
+				Recipe recipe = recipeIterator.next();
+				
+				if (recipeComponent.equals("difficulty")){
+					if (getNumericalDifficulty(recipe.Difficulty) > filterValue){
+						
+						recipeIterator.remove();
+					}
+				} else if (recipeComponent.equals("cookTime")){
+					
+					if (recipe.Time > filterValue){
+						
+						recipeIterator.remove();
+					}
+				} else if (recipeComponent.equals("rating")){
+					
+					if (recipe.Rating > filterValue){
+						
+						recipeIterator.remove();
+					}
+				}
+			}
+		}
+		
+	}
+
+	private int getNumericalDifficulty(String difficulty){
+		
+		int difficultyInt = 0;
+		
+		if (difficulty.equals("Hard")){
+			difficultyInt = 3;
+		} else if (difficulty.equals("Intermediate")){
+			difficultyInt = 2;
+		} else {
+			difficultyInt = 1;
+		}
+		
+		return difficultyInt;
 	}
 }

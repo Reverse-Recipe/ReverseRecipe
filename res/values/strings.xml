@@ -15,6 +15,10 @@
     <string name="add_ingredient">Add</string>
     <string name="title_activity_my_pantry">My Pantry</string>
     <string name="my_pantry">My Pantry</string>
+    <string name="difficulty">Difficulty</string>
+    <string name="rating">Rating</string>
+    <string name="cooktime">Cook Time</string>
+    <string name="filter_results">Filter Results</string>
     <string name="from_pantry">+</string>
     <string name="most_used">Most Used</string>
     <string name="from_most_used">-</string>
@@ -29,6 +33,7 @@
     <string name="home">Home</string>
     <string name="shoppinglist">Shopping List</string>
     <string name="ok">OK</string>
+    <string name="filter">Filter</string>
     <string name="cancel">Cancel</string>
     
 </resources>
