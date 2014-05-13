@@ -35,6 +35,7 @@
     <string name="blankstring"></string>
     <string name="home">Home</string>
     <string name="shoppinglist">Shopping List</string>
+    <string name="ingredientsgraph">Favourite Ingredient</string>
     <string name="ok">OK</string>
     <string name="filter">Filter</string>
     <string name="cancel">Cancel</string>
