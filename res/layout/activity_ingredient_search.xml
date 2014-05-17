@@ -23,23 +23,29 @@
 	    <Button
 	        android:id="@+id/addIngredientButton"
 	        android:layout_width="0dp"
-	        android:layout_height="40dp"
+	        android:layout_height="fill_parent"
 	        android:layout_weight="2"
-	        android:text="@string/add_ingredient" />
+	        android:text="@string/add_ingredient"
+	        android:background="@drawable/red_button" 
+            style="@style/ButtonText" />
 	    
-	    <Button
+	    <ImageButton
 	        android:id="@+id/fromPantryButton"
 	        android:layout_width="0dp"
 	        android:layout_height="40dp"
+	        android:paddingTop="8dp"
 	        android:layout_weight="1"
-	        android:text="@string/from_pantry" />
+	        android:background="@null"
+	        android:src="@drawable/shoppingcart32"  />
 	    
-	    <Button
+	    <ImageButton
 	        android:id="@+id/fromMostUsedButton"
 	        android:layout_width="0dp"
 	        android:layout_height="40dp"
+	        android:paddingTop="8dp"
 	        android:layout_weight="1"
-	        android:text="@string/from_most_used" />
+	        android:background="@null"
+	        android:src="@drawable/star32" />
     
     </LinearLayout>
     
@@ -67,13 +73,17 @@
             android:id="@+id/clearButton"
             android:layout_width="110dp"
             android:layout_height="fill_parent"
-            android:text="@string/clear" />
+            android:text="@string/clear"
+            android:background="@drawable/black_button" 
+            style="@style/ButtonText" />
 
         <Button
             android:id="@+id/searchButton"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:text="@string/search_recipes" />
+            android:text="@string/search_recipes"
+            android:background="@drawable/red_button" 
+            style="@style/ButtonText"  />
     </LinearLayout>
     
 </LinearLayout>

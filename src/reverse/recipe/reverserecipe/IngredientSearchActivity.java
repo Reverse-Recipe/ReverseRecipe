@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.json.JSONException;
+
 import reverse.recipe.reverserecipe.R;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -21,6 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 public class IngredientSearchActivity extends Fragment implements AsyncResponse {
@@ -29,8 +31,8 @@ public class IngredientSearchActivity extends Fragment implements AsyncResponse 
 	EditText editText;
 	Button searchButton;
 	Button deleteButton;
-	Button fromPantryButton;
-	Button fromMostUsedButton;
+	ImageButton fromPantryButton;
+	ImageButton fromMostUsedButton;
 	ArrayList<String> ingredientList;
 	ArrayList<String> mostUsedIngredients;
 	ListView listView;
@@ -70,8 +72,8 @@ public class IngredientSearchActivity extends Fragment implements AsyncResponse 
 		}
 
 		//declares xml elements
-	    fromPantryButton = (Button)getView().findViewById(R.id.fromPantryButton);
-	    fromMostUsedButton = (Button)getView().findViewById(R.id.fromMostUsedButton);
+	    fromPantryButton = (ImageButton)getView().findViewById(R.id.fromPantryButton);
+	    fromMostUsedButton = (ImageButton)getView().findViewById(R.id.fromMostUsedButton);
 		addButton = (Button)getView().findViewById(R.id.addIngredientButton);
 		editText = (EditText)getView().findViewById(R.id.ingredientsSearch);
 		selectedListView = (ListView)getView().findViewById(R.id.ingredientList);
