@@ -9,6 +9,27 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:onClick="ingredientsGraphHandler"
-    android:text="Favourite Ingredients" />
+    android:text="Most searched ingredients" />
+    
+    <Button
+    android:id="@+id/prepTimeGraph"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:onClick="prepTimeGraphHandler"
+    android:text="Time spent preparing each meal" />
+    
+    <Button
+    android:id="@+id/cookTimeGraph"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:onClick="cookTimeGraphHandler"
+    android:text="Time spent cooking each meal" />
+    
+    <Button
+    android:id="@+id/difficultyGraph"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:onClick="difficultyGraphHandler"
+    android:text="Difficulty of each meal" />
 
 </LinearLayout>

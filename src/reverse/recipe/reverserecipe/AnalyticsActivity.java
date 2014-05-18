@@ -24,6 +24,24 @@ public class AnalyticsActivity extends Activity {
 		Intent graphIntent = graph.getIntent(this);
 		startActivity(graphIntent);
 	}
+	
+	public void prepTimeGraphHandler (View v) {
+		PrepTimeGraph graph = new PrepTimeGraph();
+		Intent graphIntent = graph.getIntent(this);
+		startActivity(graphIntent);
+	}
+	
+	public void cookTimeGraphHandler (View v) {
+		CookTimeGraph graph = new CookTimeGraph();
+		Intent graphIntent = graph.getIntent(this);
+		startActivity(graphIntent);
+	}
+	
+	public void difficultyGraphHandler (View v) {
+		DifficultyGraph graph = new DifficultyGraph();
+		Intent graphIntent = graph.getIntent(this);
+		startActivity(graphIntent);
+	}
 
 	/**
 	 * Set up the {@link android.app.ActionBar}, if the API is available.

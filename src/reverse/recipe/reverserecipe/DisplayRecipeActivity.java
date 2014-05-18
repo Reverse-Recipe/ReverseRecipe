@@ -162,7 +162,20 @@ public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 		ingredientList.setText(ingredientsFormattedText);
 		methodList.setText(methodFormattedText);
 		
+		// record that the recipe has been viewed by adding to the analytics database
+		recordToDatabase(recipe);
+		
 		loadingDialog.dismiss();
+	}
+	
+	private void recordToDatabase(RecipeDetails recipe) {
+		DbHelper db = new DbHelper(this);
+		String recipeName = recipe.getTitle();
+		String difficulty = recipe.getDifficulty();
+		int prepTime = recipe.getPrepTime();
+		int cookTime = recipe.getCookTime();
+		db.addRecipe(recipeName, difficulty, prepTime, cookTime);
+		db.addToRecipeCount(recipeName);
 	}
 	
 	public boolean isOnline() {
