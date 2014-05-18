@@ -113,8 +113,8 @@ public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 			String recipeMethod = "";
 			
 			if (recipeSections.length >= 1) {
-				recipeIngredients = recipeSections[0];
-				recipeMethod = recipeSections[1];
+				recipeIngredients = recipeSections[0] + "}";
+				recipeMethod = "{" + recipeSections[1];
 				//String recipeNutrition = recipeSections[3];
 			}
 
