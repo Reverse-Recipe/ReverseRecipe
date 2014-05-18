@@ -1,7 +1,6 @@
 package reverse.recipe.reverserecipe;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.io.InputStream;
 
 import reverse.recipe.reverserecipe.R;
 import android.annotation.TargetApi;
@@ -11,8 +10,13 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
@@ -21,6 +25,7 @@ import android.widget.TextView;
 
 public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 	ProgressDialog loadingDialog;
+	RecipeDetails recipe = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -81,8 +86,19 @@ public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 		
 		Bundle bundle = getIntent().getExtras();
 		String recipeId = bundle.getString("recipeId");
+		int recipeRating = bundle.getInt("recipeRating");
+		String recipeAuthor = bundle.getString("recipeAuthor");
+		String recipeTitle = bundle.getString("recipeTitle");
+		String recipeDifficulty = bundle.getString("recipeDifficulty");
+		String recipeYield = bundle.getString("recipeYield");
+		int recipeCookTime = bundle.getInt("recipeCookTime");
+		int recipePrepTime = bundle.getInt("recipePrepTime");
+		String recipeImageURL = bundle.getString("recipeImageURL");		
+		
+		recipe = new RecipeDetails(recipeTitle, recipeId, recipeAuthor, recipeImageURL, recipeDifficulty, recipeCookTime, recipePrepTime, recipeRating, recipeYield);
 		
 		new GetSingleRecipe(this).execute(recipeId); //get recipe data
+		new DownloadImageTask().execute(recipeImageURL);
 	}
 
 	//Method from AsyncResponse interface
@@ -91,43 +107,24 @@ public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 		
 		//create recipe object
 		try{
-			RecipeDetails recipe = null;
 			
-			String[] recipeSections = output.split("<!-- End Of Analytics Code -->");
-			String recipeInfo = recipeSections[0];
+			String[] recipeSections = output.split(",\"split here\":\"\",");
 			String recipeIngredients = "";
 			String recipeMethod = "";
 			
-			if (recipeSections.length > 1) {
-				recipeIngredients = recipeSections[1];
-				recipeMethod = recipeSections[2];
+			if (recipeSections.length >= 1) {
+				recipeIngredients = recipeSections[0];
+				recipeMethod = recipeSections[1];
 				//String recipeNutrition = recipeSections[3];
 			}
 
-			JSONObject recipeObject = new JSONObject(recipeInfo);
-			
-			int id = recipeObject.getInt("recipe id");
-			String title = recipeObject.getString("title");
-			int prepTime = recipeObject.getInt("prep time");
-			int inactiveTime = recipeObject.getInt("inactive time");
-			int cookTime = recipeObject.getInt("cook time");
-			String difficulty = recipeObject.getString("difficulty");
-			int rating  = recipeObject.getInt("rating");
-			String yield = recipeObject.getString("yield");
-			int authorId = recipeObject.getInt("author");
-			String imageUrl = recipeObject.getString("image");
-			String url = recipeObject.getString("url");
-			
-			recipe = new RecipeDetails(id, title, prepTime, inactiveTime, cookTime, difficulty, rating, yield, authorId, imageUrl, url);;
-			
 			//get the recipe ingredients and method
 			recipe.setIngredients(Utilities.iterateThroughJson(recipeIngredients, "Ingredients", "number of ingredients"));
 			recipe.setMethod(Utilities.iterateThroughJson(recipeMethod, "steps", "number of steps"));
 			//recipe.setNutritionInfo(Utilities.iterateThroughJson(recipeNutrition, "nutrition labels", "number of labels"));
 			
 			fillRecipeLayout(recipe);
-		} catch(JSONException jse){
-			jse.printStackTrace();
+		} catch(Exception e){
 		}
 	}
 	
@@ -141,7 +138,7 @@ public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 		TextView recipeYield = (TextView) findViewById(R.id.recipeYield);
 		TextView ingredientList = (TextView) findViewById(R.id.ingredientList);
 		TextView methodList = (TextView) findViewById(R.id.methodList);
-		
+
 		String[] ingredients = recipe.getIngredients();
 		String[] method = recipe.getMethod();
 		String ingredientsFormattedText = "";
@@ -155,7 +152,7 @@ public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 			methodFormattedText += Integer.toString(i + 1) + ". " + method[i] + "\n\n";
 		}
 		
-		recipeTitle.setText(recipe.getTitle());
+		recipeTitle.setText(recipe.getTitle(), TextView.BufferType.SPANNABLE);
 		recipeAuthor.setText("Author: " + Integer.toString(recipe.getAuthorId()));
 		recipeDifficulty.setText("Difficulty: " + recipe.getDifficulty());
 		recipePrepTime.setText("Prep Time: " + Integer.toString(recipe.getPrepTime()));
@@ -199,4 +196,28 @@ public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 	    }
 	return true; 
 	}
+	
+	//Downloads Images From URL
+	private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {		
+
+		protected Bitmap doInBackground(String... urls) {
+			String urldisplay = urls[0];
+			Bitmap mIcon11 = null;
+			try {
+				InputStream in = new java.net.URL(urldisplay).openStream();
+				mIcon11 = BitmapFactory.decodeStream(in);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return mIcon11;
+		}
+
+		protected void onPostExecute(Bitmap result) {
+			super.onPostExecute(result);
+			Drawable d = new BitmapDrawable(getResources(),Bitmap.createScaledBitmap(result, 140, 110, true));
+			TextView recipeImage = (TextView)findViewById(R.id.recipeTitle);
+			recipeImage.setCompoundDrawablesWithIntrinsicBounds(d, null, null, null);
+		}
+	}
+	
 }

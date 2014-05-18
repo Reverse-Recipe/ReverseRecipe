@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,7 +19,6 @@ import android.os.Bundle;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -165,8 +163,15 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 				Intent intent = new Intent(SearchActivity.this, DisplayRecipeActivity.class);
 				Bundle bundle = new Bundle();
 
-				String recipeId = String.valueOf(arrayOfRecipes.get(pos).ID); 
-				bundle.putString("recipeId", recipeId);
+				bundle.putString("recipeId", String.valueOf(arrayOfRecipes.get(pos).ID));
+				bundle.putInt("recipeRating", arrayOfRecipes.get(pos).Rating);
+				bundle.putString("recipeAuthor", String.valueOf(arrayOfRecipes.get(pos).Author));
+				bundle.putString("recipeTitle", String.valueOf(arrayOfRecipes.get(pos).Title));
+				bundle.putString("recipeDifficulty", String.valueOf(arrayOfRecipes.get(pos).Difficulty));
+				bundle.putString("recipeYield", String.valueOf(arrayOfRecipes.get(pos).Yield));
+				bundle.putInt("recipeCookTime", arrayOfRecipes.get(pos).cookTime);
+				bundle.putInt("recipePrepTime", arrayOfRecipes.get(pos).prepTime);
+				bundle.putString("recipeImageURL", String.valueOf(arrayOfRecipes.get(pos).imageURL));
 
 				intent.putExtras(bundle);
 				startActivity(intent);
@@ -190,10 +195,13 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 		Bitmap Image;
 		String imageURL;
 		int Time;
+		int cookTime;
+		int prepTime;
 		String Difficulty;
 		int Rating;
+		String Yield;
 
-		public Recipe(String titleT, int idT, String authorT, double relevanceT, String imageURLT, Bitmap imageT, String difficultyT, int timeT, int ratingT) {
+		public Recipe(String titleT, int idT, String authorT, double relevanceT, String imageURLT, Bitmap imageT, String difficultyT, int cookTimeT, int prepTimeT, int ratingT, String yieldT) {
 			this.Title = titleT;
 			this.ID = idT;
 			if ("NULL".equals(authorT)) {
@@ -209,12 +217,15 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 			}
 			this.Difficulty = difficultyT;
 			
-			this.Time = timeT;
+			this.Time = cookTimeT + prepTimeT;
+			this.cookTime = cookTimeT;
+			this.prepTime = prepTimeT;
 			
 			this.imageURL = imageURLT;
 			this.Image = imageT;
 			
 			this.Rating = ratingT;
+			this.Yield = yieldT;
 		}
 	}
 
@@ -243,8 +254,10 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 					double relevanceTemp = recipeObject.getDouble("relevance");
 					String difficultyTemp = recipeObject.getString("difficulty");
 					String imageURLTemp = recipeObject.getString("image").replace("\\/", "/");
-					int timeTemp = recipeObject.getInt("cookTime") + recipeObject.getInt("prepTime");
+					int cookTimeTemp = recipeObject.getInt("cookTime");
+					int prepTimeTemp = recipeObject.getInt("prepTime");
 					int ratingTemp = recipeObject.getInt("rating");
+					String yieldTemp = recipeObject.getString("yield");
 					
 					//Mark Recipe's That Need Their Image Downloaded
 					if (!"NULL".equals(imageURLTemp)) {
@@ -254,7 +267,7 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 					}
 
 					//Display Recipe In List
-					Recipe newRecipe = new Recipe(titleTemp, idTemp, authorTemp, relevanceTemp, imageURLTemp, defaultImage, difficultyTemp, timeTemp, ratingTemp);
+					Recipe newRecipe = new Recipe(titleTemp, idTemp, authorTemp, relevanceTemp, imageURLTemp, defaultImage, difficultyTemp, cookTimeTemp, prepTimeTemp, ratingTemp, yieldTemp);
 					adapter.add(newRecipe);
 				}
 				catch(JSONException jse){

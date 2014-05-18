@@ -3,7 +3,7 @@ package reverse.recipe.reverserecipe;
 //contains all recipe information
 public class RecipeDetails { 		
 	
-	private int id;
+	private String id;
 	private String title;
 	private int prepTime;
 	private int inactiveTime;
@@ -18,25 +18,25 @@ public class RecipeDetails {
 	private String[] method;
 	private String[] nutritionInfo;
 
-	public RecipeDetails(int id, String title, int prepTime, int inactiveTime, int cookTime, String difficulty,int rating, String yield, int authorId, String imageUrl, String url) {
+	public RecipeDetails(String title, String id, String author, String imageUrl, String difficulty, int cookTime, int prepTime, int rating, String yield) {
     	this.id = id;
     	this.title = title;
     	this.prepTime = prepTime;
-    	this.inactiveTime= inactiveTime;
+    	//this.inactiveTime= inactiveTime;
     	this.cookTime = cookTime;
     	this.difficulty = difficulty;
 		this.rating = rating;
 		this.yield = yield;
-		this.authorId = authorId;
+		//this.authorId = authorId;
 		this.imageUrl = imageUrl;
-		this.url= url;
+		//this.url= url;
     }
 
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
