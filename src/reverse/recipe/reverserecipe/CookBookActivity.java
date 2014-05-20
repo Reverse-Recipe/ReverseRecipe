@@ -38,6 +38,10 @@ public class CookBookActivity extends ListActivity {
 		setContentView(R.layout.activity_cookbook);
 		setupActionBar();
 
+		initialOpen();
+	}
+	
+	public void initialOpen() {
 		arrayOfRecipes = new ArrayList<RecipeDetails>();
 		adapter = new recipeArrayAdapter(this, arrayOfRecipes);
 		setListAdapter(adapter);
@@ -106,7 +110,26 @@ public class CookBookActivity extends ListActivity {
 				intent.putExtras(bundle);
 				startActivity(intent);
 			}});
-
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		
+		String recipeJSON = prefs.getString("reverseRecipe.savedCookBook", "None Found");
+		ArrayList<String> recipes;
+		try {
+			recipes = Utilities.jsonStringToArray(recipeJSON);
+			
+			if (adapter.getCount() != recipes.size()) {
+				initialOpen();
+			}
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**

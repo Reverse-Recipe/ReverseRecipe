@@ -1,6 +1,10 @@
 package reverse.recipe.reverserecipe;
 
 import java.io.InputStream;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -12,6 +16,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class CookBookRecipeActivity extends Activity {
@@ -124,6 +130,60 @@ public class CookBookRecipeActivity extends Activity {
 			return false;
 		}
 		return true; 
+	}
+	
+	public void deleteRecipe(View view) {
+		
+		JSONArray jsonArray;
+		String recipeJSON = prefs.getString("reverseRecipe.savedCookBook", "None Found");
+		if (recipeJSON != "None Found") {
+			try {
+				jsonArray = new JSONArray(recipeJSON);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				jsonArray = new JSONArray();
+				e.printStackTrace();
+			}
+		} else {
+			jsonArray = new JSONArray();
+		}
+
+		int position = -1;
+		for (int x = 0; x < jsonArray.length(); x++) {
+			try {
+				if (recipe.getId().equals(jsonArray.getJSONObject(x).getString("Id"))) {
+					position = x;
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		//Deletes Recipe If Deselected
+		JSONArray newList = new JSONArray();     
+		int len = jsonArray.length();
+		for (int i=0;i<len;i++)
+		{ 
+			//Excluding the item at position
+			if (i != position) 
+			{
+				try {
+					newList.put(jsonArray.get(i));
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		} 
+		
+		Button saveCookBook = (Button)findViewById(R.id.saveCookBook);
+		if (position != -1) {
+			saveCookBook.setText("Deleted");
+		}
+				
+		prefs.edit().putString("reverseRecipe.savedCookBook", newList.toString()).commit(); 
+		
 	}
 
 }

@@ -42,5 +42,6 @@
     <string name="recipe_image">Recipe Image</string>
     <string name="saveCookBook">Save To Cook Book</string>
     <string name="cookBookRecipe">Cook Book Recipe</string>
+    <string name="deleteRecipe">Delete</string>
     
 </resources>
