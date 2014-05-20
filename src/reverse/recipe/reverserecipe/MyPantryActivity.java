@@ -90,13 +90,13 @@ public class MyPantryActivity extends Fragment implements AsyncResponse {
 
 				//adds ingredient to pantry list if it exists in db and not already on list
 				//saves pantry list to phone
-				if (!"".equals(input) && Arrays.asList(allIngredients).contains(input) && !(pantryList.contains(input))) {
+				if (!"".equals(input) && allIngredients != null && Arrays.asList(allIngredients).contains(input) && !(pantryList.contains(input))) {
 					adapter.add(input);	        
 					String pantryObject = new Gson().toJson(pantryList);       
 					prefs.edit().putString("reverseRecipe.savedPantry", pantryObject).commit(); 
 					adapter.notifyDataSetChanged();
 					editText.setText("");
-				}				
+				}			
 			}   	
 		});
 
