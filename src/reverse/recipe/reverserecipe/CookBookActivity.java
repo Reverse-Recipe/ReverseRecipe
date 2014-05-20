@@ -4,8 +4,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import org.json.JSONException;
 import org.json.JSONObject;
-import android.annotation.TargetApi;
-import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,16 +12,16 @@ import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v4.app.ListFragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class CookBookActivity extends ListActivity {
+public class CookBookActivity extends ListFragment {
 
 	SharedPreferences prefs;
 	recipeArrayAdapter adapter;
@@ -32,25 +30,51 @@ public class CookBookActivity extends ListActivity {
 	Bitmap defaultImage;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_cookbook);
-		setupActionBar();
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
 
+		View rootView = inflater.inflate(R.layout.activity_cookbook, container, false);
+
+		return rootView;
+	}
+
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+
+		String recipeJSON = prefs.getString("reverseRecipe.savedCookBook", "None Found");
+		ArrayList<String> recipes;
+		try {
+			recipes = Utilities.jsonStringToArray(recipeJSON);
+
+			if (adapter.getCount() != recipes.size()) {
+				initialOpen();
+			}
+
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void onViewCreated(View view, Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onViewCreated(view, savedInstanceState);
 		initialOpen();
 	}
-	
+
 	public void initialOpen() {
 		arrayOfRecipes = new ArrayList<RecipeDetails>();
-		adapter = new recipeArrayAdapter(this, arrayOfRecipes);
+		adapter = new recipeArrayAdapter(getView().getContext(), arrayOfRecipes);
 		setListAdapter(adapter);
 
-		prefs = getSharedPreferences("reverseRecipe", Context.MODE_PRIVATE);
+		prefs = getView().getContext().getSharedPreferences("reverseRecipe", Context.MODE_PRIVATE);
 		String recipeJSON = prefs.getString("reverseRecipe.savedCookBook", "None Found");
 
 		defaultImage = BitmapFactory.decodeResource(getResources(), R.drawable.food_network_logo);
-		
+
 		try {
 			ArrayList<String> recipes = Utilities.jsonStringToArray(recipeJSON);
 
@@ -68,7 +92,7 @@ public class CookBookActivity extends ListActivity {
 
 				String[] Ingredients = resultObject.getString("Ingredients").split(" @24! ");
 				String[] Method = resultObject.getString("Method").split(" @24! ");
-				
+
 				RecipeDetails newRecipe = new RecipeDetails(Title, Id, Author, ImageURL, Difficulty, CookTime, PrepTime, Rating, Yield, 0);
 				newRecipe.setIngredients(Ingredients);
 				newRecipe.setMethod(Method);
@@ -92,7 +116,7 @@ public class CookBookActivity extends ListActivity {
 			@Override
 			public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
 
-				Intent intent = new Intent(CookBookActivity.this, CookBookRecipeActivity.class);
+				Intent intent = new Intent(getView().getContext(), CookBookRecipeActivity.class);
 				Bundle bundle = new Bundle();
 
 				bundle.putString("recipeId", String.valueOf(arrayOfRecipes.get(pos).getId()));
@@ -110,66 +134,6 @@ public class CookBookActivity extends ListActivity {
 				intent.putExtras(bundle);
 				startActivity(intent);
 			}});
-	}
-	
-	@Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
-		
-		String recipeJSON = prefs.getString("reverseRecipe.savedCookBook", "None Found");
-		ArrayList<String> recipes;
-		try {
-			recipes = Utilities.jsonStringToArray(recipeJSON);
-			
-			if (adapter.getCount() != recipes.size()) {
-				initialOpen();
-			}
-			
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Set up the {@link android.app.ActionBar}, if the API is available.
-	 */
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	private void setupActionBar() {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			getActionBar().setDisplayHomeAsUpEnabled(true);
-		}
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.main_menu_actions, menu);
-		return super.onCreateOptionsMenu(menu);
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.action_home:
-			Intent homeIntent = new Intent(this,MainActivity.class);
-			startActivity(homeIntent);
-			return true;
-		case R.id.action_cookbook:
-			Intent cookbookIntent = new Intent(this,CookBookActivity.class);
-			startActivity(cookbookIntent);
-			return true;
-		case R.id.action_analytics:
-			Intent analyticsIntent = new Intent(this,AnalyticsActivity.class);
-			startActivity(analyticsIntent);
-			return true;
-		case R.id.action_shopping_list:
-			Intent shoppinglistIntent = new Intent(this,ShoppingListActivity.class);
-			startActivity(shoppinglistIntent);
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
-		}
 	}
 
 	//Downloads Images From URL
@@ -198,14 +162,14 @@ public class CookBookActivity extends ListActivity {
 			adapter.notifyDataSetChanged();
 		}
 	}
-	
-	public boolean isOnline() {
-	    ConnectivityManager conMgr = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-	    NetworkInfo netInfo = conMgr.getActiveNetworkInfo();
 
-	    if(netInfo == null || !netInfo.isConnected() || !netInfo.isAvailable()){
-	        return false;
-	    }
-	return true; 
+	public boolean isOnline() {
+		ConnectivityManager conMgr = (ConnectivityManager) getView().getContext().getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo netInfo = conMgr.getActiveNetworkInfo();
+
+		if(netInfo == null || !netInfo.isConnected() || !netInfo.isAvailable()){
+			return false;
+		}
+		return true; 
 	}
 }

@@ -2,7 +2,7 @@ package tabsswipe.adapter;
 
 import reverse.recipe.reverserecipe.IngredientSearchActivity;
 import reverse.recipe.reverserecipe.MyPantryActivity;
-import reverse.recipe.reverserecipe.HomeActivity;
+import reverse.recipe.reverserecipe.CookBookActivity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -19,13 +19,13 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 		switch (index) {
 		case 0:
 			// Top Rated fragment activity
-			return new HomeActivity();
+			return new IngredientSearchActivity();
 		case 1:
 			// Games fragment activity
-			return new IngredientSearchActivity();
+			return new MyPantryActivity();
 		case 2:
 			// Movies fragment activity
-			return new MyPantryActivity();
+			return new CookBookActivity();
 		}
 
 		return null;

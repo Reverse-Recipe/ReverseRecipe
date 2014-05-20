@@ -18,7 +18,7 @@ ActionBar.TabListener {
 	private TabsPagerAdapter mAdapter;
 	private ActionBar actionBar;
 	// Tab titles
-	private String[] tabs = { "Main", "Search", "Pantry" };
+	private String[] tabs = { "Search", "Pantry", "Cook Book" };
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -76,10 +76,6 @@ ActionBar.TabListener {
 		case R.id.action_home:
 			Intent homeIntent = new Intent(this,MainActivity.class);
 			startActivity(homeIntent);
-			return true;
-		case R.id.action_cookbook:
-			Intent cookbookIntent = new Intent(this,CookBookActivity.class);
-			startActivity(cookbookIntent);
 			return true;
 		case R.id.action_analytics:
 			Intent analyticsIntent = new Intent(this,AnalyticsActivity.class);

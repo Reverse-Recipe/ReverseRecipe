@@ -12,10 +12,6 @@
                 android:showAsAction="never"
                 android:title="@string/home"/>
             <item
-                android:id="@+id/action_cookbook"
-                android:showAsAction="never"
-                android:title="@string/cookbook"/>
-            <item
                 android:id="@+id/action_analytics"
                 android:showAsAction="never"
                 android:title="@string/analytics"/>

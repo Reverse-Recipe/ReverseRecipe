@@ -88,10 +88,6 @@ public class CookBookRecipeActivity extends Activity {
 			Intent homeIntent = new Intent(this,MainActivity.class);
 			startActivity(homeIntent);
 			return true;
-		case R.id.action_cookbook:
-			Intent cookbookIntent = new Intent(this,CookBookActivity.class);
-			startActivity(cookbookIntent);
-			return true;
 		case R.id.action_analytics:
 			Intent analyticsIntent = new Intent(this,AnalyticsActivity.class);
 			startActivity(analyticsIntent);
