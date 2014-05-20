@@ -7,6 +7,7 @@ import org.json.JSONException;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -71,7 +72,7 @@ public class CookBookRecipeActivity extends Activity {
 		TextView methodList = (TextView) findViewById(R.id.methodList);
 
 		recipeTitle.setText(recipe.getTitle(), TextView.BufferType.SPANNABLE);
-		recipeAuthor.setText("Author: " + Integer.toString(recipe.getAuthorId()));
+		recipeAuthor.setText("Author: " + recipe.getAuthor());
 		recipeDifficulty.setText("Difficulty: " + recipe.getDifficulty());
 		recipePrepTime.setText("Prep Time: " + Integer.toString(recipe.getPrepTime()));
 		recipeCookTime.setText("Cook Time: " + Integer.toString(recipe.getCookTime()));
@@ -184,6 +185,8 @@ public class CookBookRecipeActivity extends Activity {
 				
 		prefs.edit().putString("reverseRecipe.savedCookBook", newList.toString()).commit(); 
 		
+		Intent intent = new Intent(CookBookRecipeActivity.this, CookBookActivity.class);
+		startActivity(intent);
 	}
 
 }
