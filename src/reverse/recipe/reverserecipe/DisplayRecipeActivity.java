@@ -170,7 +170,7 @@ public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 		}
 
 		recipeTitle.setText(recipe.getTitle(), TextView.BufferType.SPANNABLE);
-		recipeAuthor.setText("Author: " + Integer.toString(recipe.getAuthorId()));
+		recipeAuthor.setText("Author: " + recipe.getAuthor());
 		recipeDifficulty.setText("Difficulty: " + recipe.getDifficulty());
 		recipePrepTime.setText("Prep Time: " + Integer.toString(recipe.getPrepTime()));
 		recipeCookTime.setText("Cook Time: " + Integer.toString(recipe.getCookTime()));
