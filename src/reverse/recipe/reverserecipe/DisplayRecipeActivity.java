@@ -2,6 +2,8 @@ package reverse.recipe.reverserecipe;
 
 import java.io.InputStream;
 
+import com.google.gson.Gson;
+
 import reverse.recipe.reverserecipe.R;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -10,6 +12,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -21,11 +24,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 	ProgressDialog loadingDialog;
 	RecipeDetails recipe = null;
+	SharedPreferences prefs;
+	String recipeInfo;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +86,8 @@ public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 	
 	public void displayRecipeWithIntentExtras() {
 		
+		prefs = getSharedPreferences("reverseRecipe", Context.MODE_PRIVATE);
+		
 		loadingDialog = new ProgressDialog(DisplayRecipeActivity.this);
 		loadingDialog.setMessage("Retrieving Recipe");
 		loadingDialog.show();
@@ -95,7 +103,7 @@ public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 		int recipePrepTime = bundle.getInt("recipePrepTime");
 		String recipeImageURL = bundle.getString("recipeImageURL");		
 		
-		recipe = new RecipeDetails(recipeTitle, recipeId, recipeAuthor, recipeImageURL, recipeDifficulty, recipeCookTime, recipePrepTime, recipeRating, recipeYield);
+		recipe = new RecipeDetails(recipeTitle, recipeId, recipeAuthor, recipeImageURL, recipeDifficulty, recipeCookTime, recipePrepTime, recipeRating, recipeYield, 0);
 		
 		new GetSingleRecipe(this).execute(recipeId); //get recipe data
 		new DownloadImageTask().execute(recipeImageURL);
@@ -111,6 +119,7 @@ public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 			String[] recipeSections = output.split(",\"split here\":\"\",");
 			String recipeIngredients = "";
 			String recipeMethod = "";
+			recipeInfo = output;
 			
 			if (recipeSections.length >= 1) {
 				recipeIngredients = recipeSections[0] + "}";
@@ -126,6 +135,7 @@ public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 			fillRecipeLayout(recipe);
 		} catch(Exception e){
 		}
+		loadingDialog.dismiss();
 	}
 	
 	public void fillRecipeLayout(RecipeDetails recipe){
@@ -164,8 +174,6 @@ public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 		
 		// record that the recipe has been viewed by adding to the analytics database
 		recordToDatabase(recipe);
-		
-		loadingDialog.dismiss();
 	}
 	
 	private void recordToDatabase(RecipeDetails recipe) {
@@ -231,6 +239,11 @@ public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 			TextView recipeImage = (TextView)findViewById(R.id.recipeTitle);
 			recipeImage.setCompoundDrawablesWithIntrinsicBounds(d, null, null, null);
 		}
+	}
+	
+	public void saveCookBook(View view) {
+		String pantryObject = new Gson().toJson(recipeInfo);       
+		prefs.edit().putString("reverseRecipe.savedCookBook", pantryObject).commit(); 
 	}
 	
 }

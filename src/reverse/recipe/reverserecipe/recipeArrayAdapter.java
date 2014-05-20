@@ -2,7 +2,7 @@ package reverse.recipe.reverserecipe;
 
 import java.util.ArrayList;
 
-import reverse.recipe.reverserecipe.SearchActivity.Recipe;
+import reverse.recipe.reverserecipe.RecipeDetails;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +12,7 @@ import android.widget.ImageView;
 //import android.widget.ImageView;
 import android.widget.TextView;
 
-public class recipeArrayAdapter  extends ArrayAdapter<Recipe>  {
+public class recipeArrayAdapter  extends ArrayAdapter<RecipeDetails>  {
 
 	private static class ViewHolder {
 		TextView title;
@@ -22,14 +22,14 @@ public class recipeArrayAdapter  extends ArrayAdapter<Recipe>  {
 		ImageView image;
 	}
 
-	public recipeArrayAdapter(Context context, ArrayList<Recipe> values) {
+	public recipeArrayAdapter(Context context, ArrayList<RecipeDetails> values) {
 		super(context, R.layout.recipelayoutbuilder, values);
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		// Get the data item for this position 
-		Recipe recipe = getItem(position);
+		RecipeDetails recipe = getItem(position);
 
 		// Check if an existing view is being reused, otherwise inflate the view
 		ViewHolder viewHolder; // view lookup cache stored in tag
@@ -49,13 +49,13 @@ public class recipeArrayAdapter  extends ArrayAdapter<Recipe>  {
 		}
 
 		// Populate the data into the template view using the data object
-		viewHolder.title.setText(recipe.Title);
-		viewHolder.author.setText("Author: " + recipe.Author);
-		viewHolder.difficulty.setText("Difficulty: " + recipe.Difficulty);
-		viewHolder.time.setText("Time: " + recipe.Time + " Minutes");
+		viewHolder.title.setText(recipe.getTitle());
+		viewHolder.author.setText("Author: " + recipe.getAuthor());
+		viewHolder.difficulty.setText("Difficulty: " + recipe.getDifficulty());
+		viewHolder.time.setText("Time: " + recipe.getTotalTime() + " Minutes");
 
-		if (recipe.Image != null) {
-			viewHolder.image.setImageBitmap(recipe.Image);
+		if (recipe.getImageUrl() != null) {
+			viewHolder.image.setImageBitmap(recipe.getImage());
 		}
 
 		// Return the completed view to render on screen

@@ -1,7 +1,6 @@
 package reverse.recipe.reverserecipe;
 
 import org.achartengine.ChartFactory;
-import org.achartengine.chart.BarChart.Type;
 import org.achartengine.model.CategorySeries;
 import org.achartengine.renderer.DefaultRenderer;
 import org.achartengine.renderer.SimpleSeriesRenderer;

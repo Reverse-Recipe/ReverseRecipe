@@ -1,5 +1,7 @@
 package reverse.recipe.reverserecipe;
 
+import android.graphics.Bitmap;
+
 //contains all recipe information
 public class RecipeDetails { 		
 	
@@ -14,11 +16,15 @@ public class RecipeDetails {
 	private int authorId;
 	private String imageUrl;
 	private String url;
+	private String author;
+	private Bitmap image;
+	private int totalTime;
+	private double relevance;
 	private String[] ingredients;
 	private String[] method;
 	private String[] nutritionInfo;
 
-	public RecipeDetails(String title, String id, String author, String imageUrl, String difficulty, int cookTime, int prepTime, int rating, String yield) {
+	public RecipeDetails(String title, String id, String author, String imageUrl, String difficulty, int cookTime, int prepTime, int rating, String yield, double relevance) {
     	this.id = id;
     	this.title = title;
     	this.prepTime = prepTime;
@@ -29,8 +35,39 @@ public class RecipeDetails {
 		this.yield = yield;
 		//this.authorId = authorId;
 		this.imageUrl = imageUrl;
+		this.author = author;
+		this.totalTime = cookTime + prepTime;
 		//this.url= url;
+		this.relevance = relevance;
     }
+	
+	public double getRelevance() {
+		return relevance;
+	}
+	
+	public void setRelevance(double relev) {
+		this.relevance = relev;
+	}
+	
+	public Bitmap getImage() {
+		return image;
+	}
+	
+	public void setImage(Bitmap img) {
+		this.image = img;
+	}
+	
+	public int getTotalTime() {
+		return totalTime;
+	}
+	
+	public void setAuthor(String auth) {
+		this.author = auth;
+	}
+	
+	public String getAuthor() {
+		return author;
+	}
 
 	public String getId() {
 		return id;

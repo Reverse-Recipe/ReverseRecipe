@@ -2,7 +2,6 @@ package reverse.recipe.reverserecipe;
 
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -47,7 +46,7 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 
 	recipeArrayAdapter adapter;
 	ArrayList<String> searchIngredients;
-	ArrayList<Recipe> arrayOfRecipes;
+	ArrayList<RecipeDetails> arrayOfRecipes;
 	boolean[] hasImage; //Stores which recipes have an image (to load later)
 	Bitmap defaultImage;
 	ProgressDialog loadingDialog;
@@ -138,7 +137,7 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 		loadingDialog.show();
 
 		Bundle bundle = getIntent().getExtras();
-		arrayOfRecipes = new ArrayList<Recipe>();
+		arrayOfRecipes = new ArrayList<RecipeDetails>();
 		String recipeSearchStr;
 
 		searchIngredients = bundle.getStringArrayList("searchTerms");
@@ -163,15 +162,15 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 				Intent intent = new Intent(SearchActivity.this, DisplayRecipeActivity.class);
 				Bundle bundle = new Bundle();
 
-				bundle.putString("recipeId", String.valueOf(arrayOfRecipes.get(pos).ID));
-				bundle.putInt("recipeRating", arrayOfRecipes.get(pos).Rating);
-				bundle.putString("recipeAuthor", String.valueOf(arrayOfRecipes.get(pos).Author));
-				bundle.putString("recipeTitle", String.valueOf(arrayOfRecipes.get(pos).Title));
-				bundle.putString("recipeDifficulty", String.valueOf(arrayOfRecipes.get(pos).Difficulty));
-				bundle.putString("recipeYield", String.valueOf(arrayOfRecipes.get(pos).Yield));
-				bundle.putInt("recipeCookTime", arrayOfRecipes.get(pos).cookTime);
-				bundle.putInt("recipePrepTime", arrayOfRecipes.get(pos).prepTime);
-				bundle.putString("recipeImageURL", String.valueOf(arrayOfRecipes.get(pos).imageURL));
+				bundle.putString("recipeId", String.valueOf(arrayOfRecipes.get(pos).getId()));
+				bundle.putInt("recipeRating", arrayOfRecipes.get(pos).getRating());
+				bundle.putString("recipeAuthor", String.valueOf(arrayOfRecipes.get(pos).getAuthor()));
+				bundle.putString("recipeTitle", String.valueOf(arrayOfRecipes.get(pos).getTitle()));
+				bundle.putString("recipeDifficulty", String.valueOf(arrayOfRecipes.get(pos).getDifficulty()));
+				bundle.putString("recipeYield", String.valueOf(arrayOfRecipes.get(pos).getYield()));
+				bundle.putInt("recipeCookTime", arrayOfRecipes.get(pos).getCookTime());
+				bundle.putInt("recipePrepTime", arrayOfRecipes.get(pos).getPrepTime());
+				bundle.putString("recipeImageURL", String.valueOf(arrayOfRecipes.get(pos).getImageUrl()));
 
 				intent.putExtras(bundle);
 				startActivity(intent);
@@ -184,51 +183,6 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 
 		new GetRecipeSearchResults(this).execute(recipeSearchStr);
 	}
-
-
-	//Stores Recipes Found
-	public class Recipe { 
-		String Title;
-		int ID;
-		String Author;
-		double Relevance;
-		Bitmap Image;
-		String imageURL;
-		int Time;
-		int cookTime;
-		int prepTime;
-		String Difficulty;
-		int Rating;
-		String Yield;
-
-		public Recipe(String titleT, int idT, String authorT, double relevanceT, String imageURLT, Bitmap imageT, String difficultyT, int cookTimeT, int prepTimeT, int ratingT, String yieldT) {
-			this.Title = titleT;
-			this.ID = idT;
-			if ("NULL".equals(authorT)) {
-				authorT = "Not Available";
-			}
-			this.Author = authorT;
-
-			DecimalFormat dec = new DecimalFormat("0.00");
-			this.Relevance = Double.parseDouble(dec.format(relevanceT)); //Round to 2 decimals
-
-			if ("NULL".equals(difficultyT)) {
-				difficultyT = "Not Available";
-			}
-			this.Difficulty = difficultyT;
-			
-			this.Time = cookTimeT + prepTimeT;
-			this.cookTime = cookTimeT;
-			this.prepTime = prepTimeT;
-			
-			this.imageURL = imageURLT;
-			this.Image = imageT;
-			
-			this.Rating = ratingT;
-			this.Yield = yieldT;
-		}
-	}
-
 
 	@Override
 	public void responseObtained(String output) {
@@ -249,7 +203,7 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 					JSONObject recipeObject = resultObject2.getJSONObject(String.valueOf(p)); //Get first object from array
 
 					String titleTemp = recipeObject.getString("title"); //Get Recipe Title
-					int idTemp = recipeObject.getInt("recipe id");
+					String idTemp = recipeObject.getString("recipe id");
 					String authorTemp = recipeObject.getString("author");
 					double relevanceTemp = recipeObject.getDouble("relevance");
 					String difficultyTemp = recipeObject.getString("difficulty");
@@ -267,7 +221,9 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 					}
 
 					//Display Recipe In List
-					Recipe newRecipe = new Recipe(titleTemp, idTemp, authorTemp, relevanceTemp, imageURLTemp, defaultImage, difficultyTemp, cookTimeTemp, prepTimeTemp, ratingTemp, yieldTemp);
+					RecipeDetails newRecipe = new RecipeDetails(titleTemp, idTemp, authorTemp, imageURLTemp, difficultyTemp, cookTimeTemp, prepTimeTemp, ratingTemp, yieldTemp, relevanceTemp);
+					newRecipe.setImage(defaultImage);
+					
 					adapter.add(newRecipe);
 				}
 				catch(JSONException jse){
@@ -280,7 +236,7 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 			//Download Recipe Image's
 			for (int p=0; p<NumRecipes; p++) {
 				if (hasImage[p]) {
-					new DownloadImageTask(p).execute(adapter.getItem(p).imageURL);
+					new DownloadImageTask(p).execute(adapter.getItem(p).getImageUrl());
 				}
 			}
 
@@ -344,7 +300,7 @@ public class SearchActivity extends ListActivity implements AsyncResponse {
 
 		protected void onPostExecute(Bitmap result) {
 			super.onPostExecute(result);
-			adapter.getItem(ItemNum).Image = result;
+			adapter.getItem(ItemNum).setImage(result);
 			adapter.notifyDataSetChanged();
 		}
 	}
@@ -379,82 +335,82 @@ private void showSortDialog(){
 							if (radioButton.getText().equals("Ascending")){
 								
 								if (sortBy.equals("Relevance")){
-									Collections.sort(arrayOfRecipes, new Comparator<Recipe>() {
+									Collections.sort(arrayOfRecipes, new Comparator<RecipeDetails>() {
 										
 										@Override
-										public int compare(Recipe recipe1, Recipe recipe2) {
-											return Double.compare(recipe1.Relevance, recipe2.Relevance);
+										public int compare(RecipeDetails recipe1, RecipeDetails recipe2) {
+											return Double.compare(recipe1.getRelevance(), recipe2.getRelevance());
 										}
 								    });
 								}
 								
 								if (sortBy.equals("Rating")){
-									Collections.sort(arrayOfRecipes, new Comparator<Recipe>() {
+									Collections.sort(arrayOfRecipes, new Comparator<RecipeDetails>() {
 	
 										@Override
-										public int compare(Recipe recipe1, Recipe recipe2) {
-											return Integer.compare(recipe1.Rating, recipe2.Rating);
+										public int compare(RecipeDetails recipe1, RecipeDetails recipe2) {
+											return Integer.compare(recipe1.getRating(), recipe2.getRating());
 										}
 								    });
 								}
 								
 								if (sortBy.equals("Difficulty")){
-									Collections.sort(arrayOfRecipes, new Comparator<Recipe>() {
+									Collections.sort(arrayOfRecipes, new Comparator<RecipeDetails>() {
 	
 										@Override
-										public int compare(Recipe recipe1, Recipe recipe2) {
-											return Integer.compare(getNumericalDifficulty(recipe1.Difficulty), getNumericalDifficulty(recipe2.Difficulty));
+										public int compare(RecipeDetails recipe1, RecipeDetails recipe2) {
+											return Integer.compare(getNumericalDifficulty(recipe1.getDifficulty()), getNumericalDifficulty(recipe2.getDifficulty()));
 										}
 								    });
 								}
 								
 								if (sortBy.equals("Cook Time")){
-									Collections.sort(arrayOfRecipes, new Comparator<Recipe>() {
+									Collections.sort(arrayOfRecipes, new Comparator<RecipeDetails>() {
 	
 										@Override
-										public int compare(Recipe recipe1, Recipe recipe2) {
-											return Integer.compare(recipe1.Time, recipe2.Time);
+										public int compare(RecipeDetails recipe1, RecipeDetails recipe2) {
+											return Integer.compare(recipe1.getCookTime(), recipe2.getCookTime());
 										}
 								    });
 								}
 							} else if (radioButton.getText().equals("Descending")){
 								
 								if (sortBy.equals("Relevance")){
-									Collections.sort(arrayOfRecipes, new Comparator<Recipe>() {
+									Collections.sort(arrayOfRecipes, new Comparator<RecipeDetails>() {
 										
 										@Override
-										public int compare(Recipe recipe1, Recipe recipe2) {
-											return Double.compare(recipe2.Relevance, recipe1.Relevance);
+										public int compare(RecipeDetails recipe1, RecipeDetails recipe2) {
+											return Double.compare(recipe2.getRelevance(), recipe1.getRelevance());
 										}
 								    });
 								}
 								
 								if (sortBy.equals("Rating")){
-									Collections.sort(arrayOfRecipes, new Comparator<Recipe>() {
+									Collections.sort(arrayOfRecipes, new Comparator<RecipeDetails>() {
 	
 										@Override
-										public int compare(Recipe recipe1, Recipe recipe2) {
-											return Integer.compare(recipe2.Rating, recipe1.Rating);
+										public int compare(RecipeDetails recipe1, RecipeDetails recipe2) {
+											return Integer.compare(recipe2.getRating(), recipe1.getRating());
 										}
 								    });
 								}
 								
 								if (sortBy.equals("Difficulty")){
-									Collections.sort(arrayOfRecipes, new Comparator<Recipe>() {
+									Collections.sort(arrayOfRecipes, new Comparator<RecipeDetails>() {
 	
 										@Override
-										public int compare(Recipe recipe1, Recipe recipe2) {
-											return Integer.compare(getNumericalDifficulty(recipe2.Difficulty), getNumericalDifficulty(recipe1.Difficulty));
+										public int compare(RecipeDetails recipe1, RecipeDetails recipe2) {
+											return Integer.compare(getNumericalDifficulty(recipe2.getDifficulty()), getNumericalDifficulty(recipe1.getDifficulty()));
 										}
 								    });
 								}
 								
 								if (sortBy.equals("Cook Time")){
-									Collections.sort(arrayOfRecipes, new Comparator<Recipe>() {
+									Collections.sort(arrayOfRecipes, new Comparator<RecipeDetails>() {
 	
 										@Override
-										public int compare(Recipe recipe1, Recipe recipe2) {
-											return Integer.compare(recipe2.Time, recipe1.Time);
+										public int compare(RecipeDetails recipe1, RecipeDetails recipe2) {
+											return Integer.compare(recipe2.getCookTime(), recipe1.getCookTime());
 										}
 								    });
 								}
@@ -584,29 +540,29 @@ private void showSortDialog(){
 	
 	private void filterResults(boolean dropDownValue, int filterValue, String recipeComponent){
 		
-		Iterator<Recipe> recipeIterator = arrayOfRecipes.iterator();
+		Iterator<RecipeDetails> recipeIterator = arrayOfRecipes.iterator();
 		
 		if (dropDownValue){
 			
 			while (recipeIterator.hasNext()){
 				
-				Recipe recipe = recipeIterator.next();
+				RecipeDetails recipe = recipeIterator.next();
 				
 				if (recipeComponent.equals("difficulty")){
 				
-					if (getNumericalDifficulty(recipe.Difficulty) < filterValue){
+					if (getNumericalDifficulty(recipe.getDifficulty()) < filterValue){
 						
 						recipeIterator.remove();
 					}
 				} else if (recipeComponent.equals("cookTime")){
 					
-					if (recipe.Time < filterValue){
+					if (recipe.getCookTime() < filterValue){
 						
 						recipeIterator.remove();
 					}
 				} else if (recipeComponent.equals("rating")){
 					
-					if (recipe.Rating < filterValue){
+					if (recipe.getRating() < filterValue){
 						
 						recipeIterator.remove();
 					}
@@ -618,22 +574,22 @@ private void showSortDialog(){
 			
 			while (recipeIterator.hasNext()){
 				
-				Recipe recipe = recipeIterator.next();
+				RecipeDetails recipe = recipeIterator.next();
 				
 				if (recipeComponent.equals("difficulty")){
-					if (getNumericalDifficulty(recipe.Difficulty) > filterValue){
+					if (getNumericalDifficulty(recipe.getDifficulty()) > filterValue){
 						
 						recipeIterator.remove();
 					}
 				} else if (recipeComponent.equals("cookTime")){
 					
-					if (recipe.Time > filterValue){
+					if (recipe.getCookTime() > filterValue){
 						
 						recipeIterator.remove();
 					}
 				} else if (recipeComponent.equals("rating")){
 					
-					if (recipe.Rating > filterValue){
+					if (recipe.getRating() > filterValue){
 						
 						recipeIterator.remove();
 					}
