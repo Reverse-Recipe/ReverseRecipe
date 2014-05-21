@@ -15,8 +15,10 @@ import android.graphics.Paint.Align;
 public class IngredientGraph {
 	public Intent getIntent(Context context) {
 		DbHelper db = new DbHelper(context);
+		// Get the ingredient names for the X axis
 		ArrayList<String> ingredientList = db.getTop25Ingredients();
 		CategorySeries series = new CategorySeries("Most Searched Ingredients");
+		// Get the ingredient counts for the Y axis
 		for (int i = 0; i < ingredientList.size(); i++) {
 			series.add(db.getIngredientCount(ingredientList.get(i)));
 		}
@@ -24,33 +26,38 @@ public class IngredientGraph {
 		
 		XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
 		dataset.addSeries(series.toXYSeries());
-		
+		// Renderer is used to render the dataset to a graph
 		XYMultipleSeriesRenderer mRenderer = new XYMultipleSeriesRenderer();
 		XYSeriesRenderer renderer = new XYSeriesRenderer();
-		mRenderer.setBackgroundColor(Color.BLACK);
+		mRenderer.setBackgroundColor(Color.BLACK); // sets background colour
 		mRenderer.setApplyBackgroundColor(true);
-        mRenderer.setAxisTitleTextSize(16);
-        mRenderer.setLegendHeight(125);
+        mRenderer.setLegendHeight(125); // adjust the legend vertically
+        // set sizes of text
         mRenderer.setChartTitleTextSize(25);
+        mRenderer.setAxisTitleTextSize(16);
         mRenderer.setLabelsTextSize(20);
         mRenderer.setLegendTextSize(20);
+        // set the margins around the graph
         mRenderer.setMargins(new int[] { 30, 40, 100, 0 });
-        renderer.setColor(Color.rgb(99, 184, 255));
-		//renderer.setDisplayChartValues(true);
+        // set the color of the bars
+        renderer.setColor(Color.rgb(184, 194, 194));
+
         mRenderer.setXAxisMin(0.5);
         mRenderer.setXAxisMax(10.5);
         mRenderer.setYAxisMin(0);
         mRenderer.setXLabels(0);
-        //mRenderer.setYAxisMax(25);
+
         for (int i = 0; i < ingredientList.size(); i++) {
         	mRenderer.addXTextLabel(i+1, ingredientList.get(i));
         }
+        // space between the bars
         mRenderer.setBarSpacing(0.5);
+       
         mRenderer.setXLabelsAngle(45);
         mRenderer.setXLabelsAlign(Align.LEFT);
-        //mRenderer.setShowGrid(true);
-        //mRenderer.setGridColor(Color.GRAY);
+
         try {
+        	// Customize a message for certain situations.
         	String topIngredient = ingredientList.get(0);
         	String secondIngredient = ingredientList.get(1);
         	if (db.getIngredientCount(ingredientList.get(0))/db.getIngredientCount(ingredientList.get(1)) > 2 && db.getIngredientCount(ingredientList.get(0)) > 10) {
