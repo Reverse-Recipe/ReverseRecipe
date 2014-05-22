@@ -26,7 +26,7 @@ public class DifficultyGraph {
         series.add(intermediate, intermediateCount);
         series.add(hard, hardCount);
         series.add(hardest, hardestCount);
-        int []colors = new int[]{Color.GREEN, Color.WHITE, Color.MAGENTA, Color.RED};
+        int []colors = new int[]{Color.rgb(182, 193, 233), Color.rgb(148, 206, 156), Color.rgb(162, 108, 108), Color.rgb(162, 108, 162)};
         
         DefaultRenderer renderer = new DefaultRenderer();
         for(int color : colors){
@@ -44,7 +44,7 @@ public class DifficultyGraph {
         renderer.setChartTitleTextSize((float) 30);
         renderer.setLegendTextSize(25);
         renderer.setDisplayValues(false);
-        
+        // set custom messages for certain situations
         if (easyCount > 0.6*(easyCount+intermediateCount+hardCount)) {
         	renderer.setChartTitle("Why not try something harder...");
         } else if ((hardCount+hardestCount) > 0.75*(easyCount+intermediateCount+hardCount+hardestCount)) {
