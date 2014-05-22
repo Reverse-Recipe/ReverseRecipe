@@ -1,10 +1,13 @@
 package reverse.recipe.reverserecipe;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import reverse.recipe.reverserecipe.R;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -23,10 +26,12 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class DisplayRecipeActivity extends Activity implements AsyncResponse {
@@ -34,6 +39,14 @@ public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 	RecipeDetails recipe = null;
 	SharedPreferences prefs;
 	String recipeInfo;
+	CountDownTimer countDown;
+	String pausedAt;
+	Button pauseButton;
+	Button stopButton;
+	LinearLayout timerInput;
+	LinearLayout timerDisplay;
+	TextView timerLabel;
+	TextView timerInputText;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -356,6 +369,95 @@ public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 		} catch (JSONException e) {
 		}
 		return obj;
+	}
+	
+	public void startTimer(View view) {
+		
+		timerInputText = (TextView) findViewById(R.id.timerInputText);
+		timerLabel = (TextView)findViewById(R.id.timerLabel);
+		Long startTime = Long.valueOf(timerInputText.getText().toString()) * 60000;
+		timerInput = (LinearLayout)findViewById(R.id.timerInput);
+		timerDisplay = (LinearLayout)findViewById(R.id.timerDisplay);
+		timerInput.setVisibility(View.GONE);
+		timerDisplay.setVisibility(View.VISIBLE);
+		pauseButton = (Button)findViewById(R.id.pauseCooking);
+		stopButton = (Button)findViewById(R.id.stopCooking);
+		
+		pauseButton.setOnClickListener(new Button.OnClickListener(){
+    		
+    		@Override
+    	   public void onClick(View arg0) {
+    			
+    			if (pauseButton.getText().equals("Pause")){
+	    			countDown.cancel();
+	    			pausedAt = timerLabel.getText().toString();
+	    			pauseButton.setText("Resume");
+    			} else {
+    				
+    				String[] splitTimer = pausedAt.split(":");
+    				long minutes = Long.parseLong(splitTimer[0]);
+    				long seconds = Long.parseLong(splitTimer[1]);
+    				long startTime = (minutes * 60 + seconds) * 1000;
+    				
+    				countDown = initiateTimer(startTime);	
+    				countDown.start();
+    				pauseButton.setText("Pause");
+    			}
+	   }});
+		
+		stopButton.setOnClickListener(new Button.OnClickListener(){
+    		
+    		@Override
+    	   public void onClick(View arg0) {
+    			countDown.cancel();
+    			timerInput.setVisibility(View.VISIBLE);
+    			timerDisplay.setVisibility(View.GONE);
+    			timerInputText.setText("");
+    			
+	   }});
+		
+		countDown = initiateTimer(startTime);	
+		countDown.start();
+
+	}
+	
+
+	public CountDownTimer initiateTimer(long startTime){
+		
+		countDown = new CountDownTimer(startTime, 1000) {
+			
+			
+			
+			
+			 public void onTick(long millisUntilFinished) {
+				 
+				 long minutes = millisUntilFinished / 1000 / 60;
+				 long seconds = millisUntilFinished / 1000 % 60;
+				 timerLabel = (TextView)findViewById(R.id.timerLabel);
+				 
+				 timerLabel.setText(String.format("%02d", minutes) + ":" + String.format("%02d",seconds));
+			 }
+
+			 public void onFinish() {
+				 timerInput.setVisibility(View.VISIBLE);
+				 timerDisplay.setVisibility(View.GONE);
+				 timerInputText.setText("");
+				 
+				 AlertDialog.Builder builder = new AlertDialog.Builder(DisplayRecipeActivity.this);
+					
+				 builder.setTitle("Timer Finished!")
+				 	.setMessage("Your timer has finished")
+					.setPositiveButton(R.string.ok,
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int id) {
+								}
+							});
+				
+				builder.create().show();
+			 }
+		};
+		
+		return countDown;
 	}
 
 }

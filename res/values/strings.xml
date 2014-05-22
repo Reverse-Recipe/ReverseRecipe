@@ -43,5 +43,9 @@
     <string name="saveCookBook">Save To Cook Book</string>
     <string name="cookBookRecipe">Cook Book Recipe</string>
     <string name="deleteRecipe">Delete</string>
+    <string name="pause">Pause</string>
+    <string name="stop">Stop</string>
+    <string name="startTimer">Start Timer</string>
+    <string name="minutes">Minutes</string>
     
 </resources>
