@@ -55,6 +55,8 @@ public class IngredientGraph {
        
         mRenderer.setXLabelsAngle(45);
         mRenderer.setXLabelsAlign(Align.LEFT);
+        
+        mRenderer.setChartTitle("Most Searched Ingredients");
 
         try {
         	// Customize a message for certain situations.
