@@ -22,10 +22,6 @@
                 android:id="@+id/action_analytics"
                 android:showAsAction="never"
                 android:title="@string/analytics"/>
-            <item
-                android:id="@+id/action_shopping_list"
-                android:showAsAction="never"
-                android:title="@string/shoppinglist"/>
         </menu>
     </item>
 </menu>

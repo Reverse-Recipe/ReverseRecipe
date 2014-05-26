@@ -81,10 +81,6 @@ ActionBar.TabListener {
 			Intent analyticsIntent = new Intent(this,AnalyticsActivity.class);
 			startActivity(analyticsIntent);
 			return true;
-		case R.id.action_shopping_list:
-			Intent shoppinglistIntent = new Intent(this,ShoppingListActivity.class);
-			startActivity(shoppinglistIntent);
-			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
