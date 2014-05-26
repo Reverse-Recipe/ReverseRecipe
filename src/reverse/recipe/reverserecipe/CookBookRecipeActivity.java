@@ -115,8 +115,41 @@ public class CookBookRecipeActivity extends Activity {
 			return true;
 		case R.id.menu_save:
 			deleteRecipe();
+			return true;
+		case R.id.send_recipe:
+			sendEmail();
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
+		}
+	}
+	
+	public void sendEmail() {
+		String sendString = "";
+		Intent i = new Intent(Intent.ACTION_SEND);
+		i.setType("message/rfc822");
+		i.putExtra(Intent.EXTRA_SUBJECT, "Check Out This Awesome Recipe!");
+		
+		sendString = recipe.getTitle() + "\n\n";
+		sendString += "Cook Time: " + recipe.getCookTime() + "\n";
+		sendString += "Prep Time: " + recipe.getPrepTime();
+		
+		sendString += "\n\n\n\nIngredients:\n";
+		for (int x = 0; x < recipe.getIngredients().length; x++) {
+			sendString += "\n\n" + recipe.getIngredients()[x];
+		}
+		
+		sendString += "\n\n\n\nMethod:\n";
+		for (int x = 0; x < recipe.getMethod().length; x++) {
+			sendString += "\n\n" + String.valueOf(x+1) + ".  " + recipe.getMethod()[x];
+		}
+    
+		i.putExtra(Intent.EXTRA_TEXT   , sendString);
+	    
+		try {
+		    startActivity(Intent.createChooser(i, "Send Mail..."));
+		} catch (android.content.ActivityNotFoundException ex) {
+		    Toast.makeText(CookBookRecipeActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
 		}
 	}
 

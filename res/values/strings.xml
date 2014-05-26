@@ -47,5 +47,6 @@
     <string name="stop">Stop</string>
     <string name="startTimer">Start Timer</string>
     <string name="minutes">Minutes</string>
+    <string name="send_email">Send Recipe: Email</string>
     
 </resources>
