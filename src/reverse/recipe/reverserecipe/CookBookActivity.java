@@ -158,8 +158,12 @@ public class CookBookActivity extends ListFragment {
 
 		protected void onPostExecute(Bitmap result) {
 			super.onPostExecute(result);
-			adapter.getItem(ItemNum).setImage(result);
-			adapter.notifyDataSetChanged();
+			try {
+				adapter.getItem(ItemNum).setImage(result);
+				adapter.notifyDataSetChanged();
+			} catch (Exception e) {
+				
+			}
 		}
 	}
 

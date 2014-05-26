@@ -7,7 +7,7 @@
     <string name="title_activity_search">Search Recipes</string>
     <string name="search_recipes">Search Recipes</string>
     <string name="title_activity_display_recipe">View Recipe</string>
-    <string name="display_recipe">View Recipe</string>
+    <string name="display_recipe">Recipe</string>
     <string name="title_activity_ingredient_search">Search Ingredients</string>
     <string name="search_ingredients">Search Ingredients</string>
     <string name="ingredients_label">Ingredients</string>
@@ -41,7 +41,7 @@
     <string name="cancel">Cancel</string>
     <string name="recipe_image">Recipe Image</string>
     <string name="saveCookBook">Save To Cook Book</string>
-    <string name="cookBookRecipe">Cook Book Recipe</string>
+    <string name="cookBookRecipe">Recipe</string>
     <string name="deleteRecipe">Delete</string>
     <string name="pause">Pause</string>
     <string name="stop">Stop</string>

@@ -2,6 +2,7 @@ package reverse.recipe.reverserecipe;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -31,8 +32,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 	ProgressDialog loadingDialog;
@@ -47,19 +50,21 @@ public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 	LinearLayout timerDisplay;
 	TextView timerLabel;
 	TextView timerInputText;
+	ExpandableListAdapter listAdapter;
+	ExpandableListView expListView;
+	List<String> listDataHeader;
+	HashMap<String, List<String>> listDataChild;
+	private Menu menu;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_display_recipe);
-		setupActionBar();
 
-		if (getIntent().hasExtra("recipeId")){
-			if (isOnline()) {
-				displayRecipeWithIntentExtras();	
-			}
-		}
+		displayRecipeWithIntentExtras();	
+		setupActionBar();
+		new DownloadImageTask().execute(recipe.getImageUrl());
 	}
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -71,7 +76,11 @@ public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.main_menu_actions, menu);
+		getMenuInflater().inflate(R.menu.display_recipe, menu);
+		this.menu = menu;
+		if (checkIfSaved() != -1) {
+			menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.content_discard));
+		}
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -90,6 +99,8 @@ public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 			Intent shoppinglistIntent = new Intent(this,ShoppingListActivity.class);
 			startActivity(shoppinglistIntent);
 			return true;
+		case R.id.menu_save:
+			saveCookBook();
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -116,13 +127,7 @@ public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 
 		recipe = new RecipeDetails(recipeTitle, recipeId, recipeAuthor, recipeImageURL, recipeDifficulty, recipeCookTime, recipePrepTime, recipeRating, recipeYield, 0);
 
-		if (checkIfSaved() != -1) {
-			Button saveCookBook = (Button)findViewById(R.id.saveCookBook);
-			saveCookBook.setText("Saved");
-		}
-		
 		new GetSingleRecipe(this).execute(recipeId); //get recipe data
-		new DownloadImageTask().execute(recipeImageURL);
 	}
 
 	//Method from AsyncResponse interface
@@ -162,21 +167,6 @@ public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 		TextView recipeCookTime = (TextView) findViewById(R.id.recipeCookTime);
 		TextView recipeRating = (TextView) findViewById(R.id.recipeRating);
 		TextView recipeYield = (TextView) findViewById(R.id.recipeYield);
-		TextView ingredientList = (TextView) findViewById(R.id.ingredientList);
-		TextView methodList = (TextView) findViewById(R.id.methodList);
-
-		String[] ingredients = recipe.getIngredients();
-		String[] method = recipe.getMethod();
-		String ingredientsFormattedText = "";
-		String methodFormattedText = "";
-
-		for (int i = 0; i < ingredients.length; i++){
-			ingredientsFormattedText += ingredients[i] + "\n";
-		}
-
-		for (int i = 0; i < method.length; i++){
-			methodFormattedText += Integer.toString(i + 1) + ". " + method[i] + "\n\n";
-		}
 
 		recipeTitle.setText(recipe.getTitle(), TextView.BufferType.SPANNABLE);
 		recipeAuthor.setText("Author: " + recipe.getAuthor());
@@ -185,8 +175,11 @@ public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 		recipeCookTime.setText("Cook Time: " + Integer.toString(recipe.getCookTime()));
 		recipeRating.setText("Rating: " + Integer.toString(recipe.getRating()));
 		recipeYield.setText("Yield: " + recipe.getYield());
-		ingredientList.setText(ingredientsFormattedText);
-		methodList.setText(methodFormattedText);
+
+		expListView = (ExpandableListView) findViewById(R.id.lvExp);
+		prepareListData();
+		listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
+		expListView.setAdapter(listAdapter);
 
 		// record that the recipe has been viewed by adding to the analytics database
 		recordToDatabase(recipe);
@@ -260,7 +253,7 @@ public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 			}
 		}
 	}
-	
+
 	public int checkIfSaved() {
 		JSONArray jsonArray;
 		String recipeJSON = prefs.getString("reverseRecipe.savedCookBook", "None Found");
@@ -287,11 +280,11 @@ public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 				e.printStackTrace();
 			}
 		}
-		
+
 		return position;
 	}
 
-	public void saveCookBook(View view) {
+	public void saveCookBook() {
 
 		JSONArray jsonArray;
 		String recipeJSON = prefs.getString("reverseRecipe.savedCookBook", "None Found");
@@ -306,17 +299,18 @@ public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 		} else {
 			jsonArray = new JSONArray();
 		}
-		
+
 		int position = checkIfSaved();
-		
-		Button saveCookBook = (Button)findViewById(R.id.saveCookBook);
+
 		if (position == -1) {
 			jsonArray.put(getJSONObject());
-			saveCookBook.setText("Saved");
+			menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.content_discard));
+			Toast.makeText(this, "Recipe Saved", Toast.LENGTH_SHORT).show();
 		} else {
-			saveCookBook.setText("Save To Cook Book");	
+			menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.content_save));	
+			Toast.makeText(this, "Recipe Deleted", Toast.LENGTH_SHORT).show();
 		}
-					
+
 		//Deletes Recipe If Deselected
 		JSONArray newList = new JSONArray();     
 		int len = jsonArray.length();
@@ -370,9 +364,9 @@ public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 		}
 		return obj;
 	}
-	
+
 	public void startTimer(View view) {
-		
+
 		timerInputText = (TextView) findViewById(R.id.timerInputText);
 		timerLabel = (TextView)findViewById(R.id.timerLabel);
 		Long startTime = Long.valueOf(timerInputText.getText().toString()) * 60000;
@@ -382,82 +376,106 @@ public class DisplayRecipeActivity extends Activity implements AsyncResponse {
 		timerDisplay.setVisibility(View.VISIBLE);
 		pauseButton = (Button)findViewById(R.id.pauseCooking);
 		stopButton = (Button)findViewById(R.id.stopCooking);
-		
+
 		pauseButton.setOnClickListener(new Button.OnClickListener(){
-    		
-    		@Override
-    	   public void onClick(View arg0) {
-    			
-    			if (pauseButton.getText().equals("Pause")){
-	    			countDown.cancel();
-	    			pausedAt = timerLabel.getText().toString();
-	    			pauseButton.setText("Resume");
-    			} else {
-    				
-    				String[] splitTimer = pausedAt.split(":");
-    				long minutes = Long.parseLong(splitTimer[0]);
-    				long seconds = Long.parseLong(splitTimer[1]);
-    				long startTime = (minutes * 60 + seconds) * 1000;
-    				
-    				countDown = initiateTimer(startTime);	
-    				countDown.start();
-    				pauseButton.setText("Pause");
-    			}
-	   }});
-		
+
+			@Override
+			public void onClick(View arg0) {
+
+				if (pauseButton.getText().equals("Pause")){
+					countDown.cancel();
+					pausedAt = timerLabel.getText().toString();
+					pauseButton.setText("Resume");
+				} else {
+
+					String[] splitTimer = pausedAt.split(":");
+					long minutes = Long.parseLong(splitTimer[0]);
+					long seconds = Long.parseLong(splitTimer[1]);
+					long startTime = (minutes * 60 + seconds) * 1000;
+
+					countDown = initiateTimer(startTime);	
+					countDown.start();
+					pauseButton.setText("Pause");
+				}
+			}});
+
 		stopButton.setOnClickListener(new Button.OnClickListener(){
-    		
-    		@Override
-    	   public void onClick(View arg0) {
-    			countDown.cancel();
-    			timerInput.setVisibility(View.VISIBLE);
-    			timerDisplay.setVisibility(View.GONE);
-    			timerInputText.setText("");
-    			
-	   }});
-		
+
+			@Override
+			public void onClick(View arg0) {
+				countDown.cancel();
+				timerInput.setVisibility(View.VISIBLE);
+				timerDisplay.setVisibility(View.GONE);
+				timerInputText.setText("");
+
+			}});
+
 		countDown = initiateTimer(startTime);	
 		countDown.start();
 
 	}
-	
+
 
 	public CountDownTimer initiateTimer(long startTime){
-		
-		countDown = new CountDownTimer(startTime, 1000) {
-			
-			
-			
-			
-			 public void onTick(long millisUntilFinished) {
-				 
-				 long minutes = millisUntilFinished / 1000 / 60;
-				 long seconds = millisUntilFinished / 1000 % 60;
-				 timerLabel = (TextView)findViewById(R.id.timerLabel);
-				 
-				 timerLabel.setText(String.format("%02d", minutes) + ":" + String.format("%02d",seconds));
-			 }
 
-			 public void onFinish() {
-				 timerInput.setVisibility(View.VISIBLE);
-				 timerDisplay.setVisibility(View.GONE);
-				 timerInputText.setText("");
-				 
-				 AlertDialog.Builder builder = new AlertDialog.Builder(DisplayRecipeActivity.this);
-					
-				 builder.setTitle("Timer Finished!")
-				 	.setMessage("Your timer has finished")
-					.setPositiveButton(R.string.ok,
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int id) {
-								}
-							});
-				
+		countDown = new CountDownTimer(startTime, 1000) {
+
+
+
+
+			public void onTick(long millisUntilFinished) {
+
+				long minutes = millisUntilFinished / 1000 / 60;
+				long seconds = millisUntilFinished / 1000 % 60;
+				timerLabel = (TextView)findViewById(R.id.timerLabel);
+
+				timerLabel.setText(String.format("%02d", minutes) + ":" + String.format("%02d",seconds));
+			}
+
+			public void onFinish() {
+				timerInput.setVisibility(View.VISIBLE);
+				timerDisplay.setVisibility(View.GONE);
+				timerInputText.setText("");
+
+				AlertDialog.Builder builder = new AlertDialog.Builder(DisplayRecipeActivity.this);
+
+				builder.setTitle("Timer Finished!")
+				.setMessage("Your timer has finished")
+				.setPositiveButton(R.string.ok,
+						new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+					}
+				});
+
 				builder.create().show();
-			 }
+			}
 		};
-		
+
 		return countDown;
+	}
+
+	private void prepareListData() {
+		listDataHeader = new ArrayList<String>();
+		listDataChild = new HashMap<String, List<String>>();
+
+		// Adding child data
+		listDataHeader.add("Ingredients");
+		listDataHeader.add("Method");
+
+		// Adding child data
+		List<String> ingreds = new ArrayList<String>();
+
+		for (int x = 0; x < recipe.getIngredients().length; x++) {
+			ingreds.add(recipe.getIngredients()[x]);
+		}
+
+		List<String> method = new ArrayList<String>();
+		for (int x = 0; x < recipe.getMethod().length; x++) {
+			method.add(String.valueOf(x+1) + ".  " + recipe.getMethod()[x]);
+		}
+
+		listDataChild.put(listDataHeader.get(0), ingreds); // Header, Child data
+		listDataChild.put(listDataHeader.get(1), method);
 	}
 
 }

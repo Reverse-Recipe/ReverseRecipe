@@ -1,20 +1,24 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin" >
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:id="@+id/headBanner"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        tools:context=".DisplayRecipeActivity" >
+        android:orientation="vertical" >
 
         <TextView
             android:id="@+id/recipeTitle"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_marginBottom="10dp"
             android:drawableLeft="@drawable/food_network_logo"
-            android:drawablePadding="10dp"
+            android:drawablePadding="5dp"
             android:gravity="center"
             android:minHeight="100dp"
             android:paddingLeft="5dp"
@@ -26,7 +30,9 @@
             android:id="@+id/recipeTable"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/recipeTitle" >
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:stretchColumns="1" >
 
             <TableRow
                 android:id="@+id/firstDetailsRow"
@@ -34,23 +40,17 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal" >
 
-                <View android:layout_weight="2" />
-
-                <TextView
-                    android:id="@+id/recipeDifficulty"
-                    android:layout_weight="6"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
-
                 <TextView
                     android:id="@+id/recipeAuthor"
-                    android:layout_gravity="right"
-                    android:layout_weight="6"
-                    android:gravity="right"
-                    android:textSize="12sp"
+                    android:layout_gravity="left"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
 
-                <View android:layout_weight="2" />
+                <TextView
+                    android:id="@+id/recipeRating"
+                    android:layout_gravity="right"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
             </TableRow>
 
             <TableRow
@@ -59,22 +59,17 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal" >
 
-                <View android:layout_weight="2" />
+                <TextView
+                    android:id="@+id/recipeYield"
+                    android:layout_gravity="left"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/recipePrepTime"
-                    android:layout_weight="6"
-                    android:textSize="12sp"
+                    android:layout_gravity="right"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/recipeCookTime"
-                    android:layout_weight="6"
-                    android:gravity="right"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
-
-                <View android:layout_weight="2" />
             </TableRow>
 
             <TableRow
@@ -83,71 +78,117 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal" >
 
-                <View android:layout_weight="2" />
-
                 <TextView
-                    android:id="@+id/recipeYield"
-                    android:layout_weight="6"
-                    android:textSize="12sp"
+                    android:id="@+id/recipeDifficulty"
+                    android:layout_gravity="left"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/recipeRating"
-                    android:layout_weight="6"
-                    android:gravity="right"
-                    android:textSize="12sp"
+                    android:id="@+id/recipeCookTime"
+                    android:layout_gravity="right"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
-
-                <View android:layout_weight="2" />
             </TableRow>
         </TableLayout>
+    </LinearLayout>
+
+    <ExpandableListView
+        android:id="@+id/lvExp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/timer"
+        android:layout_below="@+id/headBanner" />
+
+    <LinearLayout
+        android:id="@+id/timer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="8dp"
+        android:background="#FFFFFF"
+        android:gravity="center"
+        android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/ingredientsLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/recipeTable"
-            android:layout_marginBottom="10dp"
-            android:text="@string/ingredients_label"
-            android:textSize="18sp" />
+            android:id="@+id/seperator"
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:background="#000000"
+            android:gravity="center" />
 
-        <TextView
-            android:id="@+id/ingredientList"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/ingredientsLabel"
-            android:layout_marginLeft="10dp"
-            android:gravity="left"
-            android:textSize="12sp" />
-
-        <TextView
-            android:id="@+id/methodLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/ingredientList"
-            android:layout_marginBottom="10dp"
-            android:text="@string/method_label"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/methodList"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/methodLabel"
-            android:layout_marginLeft="10dp"
-            android:gravity="left"
-            android:textSize="12sp" />
-
-        <Button
-            android:id="@+id/saveCookBook"
+        <LinearLayout
+            android:id="@+id/timerInput"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/methodList"
             android:gravity="center"
-            android:onClick="deleteRecipe"
-            android:text="@string/deleteRecipe" />
-    </RelativeLayout>
+            android:orientation="horizontal" >
 
-</ScrollView>
+            <EditText
+                android:id="@+id/timerInputText"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_marginBottom="4dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginTop="8dp"
+                android:layout_weight="1"
+                android:hint="@string/minutes"
+                android:inputType="number"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/startCooking"
+                style="@style/ButtonText"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginBottom="8dp"
+                android:layout_weight="2"
+                android:background="@drawable/red_button"
+                android:onClick="startTimer"
+                android:text="@string/startTimer" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/timerDisplay"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="gone" >
+
+            <TextView
+                android:id="@+id/timerLabel"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_marginBottom="4dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginTop="8dp"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:textSize="24sp" />
+
+            <Button
+                android:id="@+id/pauseCooking"
+                style="@style/ButtonText"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginBottom="8dp"
+                android:layout_weight="3"
+                android:background="@drawable/black_button"
+                android:text="@string/pause" />
+
+            <Button
+                android:id="@+id/stopCooking"
+                style="@style/ButtonText"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginBottom="8dp"
+                android:layout_weight="3"
+                android:background="@drawable/red_button"
+                android:text="@string/stop" />
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>
