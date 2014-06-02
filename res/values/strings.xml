@@ -48,5 +48,11 @@
     <string name="startTimer">Start Timer</string>
     <string name="minutes">Minutes</string>
     <string name="send_email">Send Recipe: Email</string>
+    <string name="step1">Step 1: Add Ingredient</string>
+    <string name="step2">Step 2: Search Recipes</string>
+    <string name="step3">Step 3: View Results</string>
+    <string name="splash_image">Splash Tutorial Image</string>
+    <string name="splash_donotdisplay">Display This Screen On App Start</string>
+    <string name="display_splash">Display Splash</string>
     
 </resources>

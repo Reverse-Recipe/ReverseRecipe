@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="5dp" >
+
+    <TextView
+        android:id="@+id/step1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/step1"
+        android:textSize="25sp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/image1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/step1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:contentDescription="@string/splash_image"
+        android:src="@drawable/add_ingred" />
+
+    <TextView
+        android:id="@+id/step2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/image1"
+        android:layout_marginTop="30dp"
+        android:text="@string/step2"
+        android:textSize="25sp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/image2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/step2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:contentDescription="@string/splash_image"
+        android:src="@drawable/search_button" />
+
+    <TextView
+        android:id="@+id/step3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/image2"
+        android:layout_marginTop="30dp"
+        android:text="@string/step3"
+        android:textSize="25sp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/image3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/step3"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:contentDescription="@string/splash_image"
+        android:src="@drawable/single_recipe" />
+
+    <CheckBox
+        android:id="@+id/splash_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:checked="true"
+        android:text="@string/splash_donotdisplay" />
+
+</RelativeLayout>

@@ -5,7 +5,9 @@ import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
@@ -65,6 +67,16 @@ ActionBar.TabListener {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// TODO Auto-generated method stub
 		getMenuInflater().inflate(R.menu.main_menu_actions, menu);
+		
+        final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean isSplashEnabled = sp.getBoolean("isSplashEnabled", true);
+        
+        if (isSplashEnabled) {
+        	menu.getItem(0).getSubMenu().getItem(2).setTitle("Do Not Display Splash");
+        } else {
+        	menu.getItem(0).getSubMenu().getItem(2).setTitle("Display Splash");
+        }
+		
 		return super.onCreateOptionsMenu(menu);
 	}
 	
@@ -80,6 +92,18 @@ ActionBar.TabListener {
 		case R.id.action_analytics:
 			Intent analyticsIntent = new Intent(this,AnalyticsActivity.class);
 			startActivity(analyticsIntent);
+			return true;
+		case R.id.action_splash:
+	        final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+	        boolean isSplashEnabled = sp.getBoolean("isSplashEnabled", true);
+	        
+	        if (isSplashEnabled) {
+	        	item.setTitle("Display Splash");
+	        	sp.edit().putBoolean("isSplashEnabled", false).commit();
+	        } else {
+	        	item.setTitle("Do Not Display Splash");
+	        	sp.edit().putBoolean("isSplashEnabled", true).commit();
+	        }
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
